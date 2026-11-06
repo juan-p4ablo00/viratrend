@@ -1,0 +1,22 @@
+node_modules/
+dist/
+.next/
+out/
+*.tsbuildinfo
+next-env.d.ts
+
+# Prisma Client gerado
+apps/api/src/generated/
+
+# Segredos — só os .env.example vão para o git
+.env
+.env.*
+!.env.example
+
+# Uploads locais de desenvolvimento
+apps/api/uploads/
+
+.DS_Store
+Thumbs.db
+*.log
+.vercel

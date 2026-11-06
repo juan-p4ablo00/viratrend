@@ -1,0 +1,29 @@
+{
+  "name": "viratrend",
+  "private": true,
+  "description": "ViraTrend — plataforma de descoberta e curadoria de produtos (afiliados).",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "engines": {
+    "node": ">=20.19"
+  },
+  "scripts": {
+    "build:shared": "npm run build -w @viratrend/shared",
+    "dev:api": "npm run build:shared && npm run dev -w @viratrend/api",
+    "dev:web": "npm run build:shared && npm run dev -w @viratrend/web",
+    "build": "npm run build:shared && npm run build -w @viratrend/api && npm run build -w @viratrend/web",
+    "typecheck": "npm run build:shared && npm run typecheck --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "db:migrate": "npm run db:migrate -w @viratrend/api",
+    "db:deploy": "npm run db:deploy -w @viratrend/api",
+    "db:seed": "npm run db:seed -w @viratrend/api"
+  },
+  "devDependencies": {
+    "prettier": "3.9.10",
+    "typescript": "5.9.3"
+  }
+}

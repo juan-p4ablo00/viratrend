@@ -1,0 +1,205 @@
+// ViraTrend — modelo inicial (MySQL 8).
+// Decisões registradas em docs/ARCHITECTURE.md §6.
+// Convenções: tabelas em snake_case plural, colunas em snake_case, exclusão lógica por status/is_active.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+enum Role {
+  ADMIN // tudo, inclusive usuários
+  EDITOR // catálogo (produtos, categorias, lojas, links)
+}
+
+enum ProductStatus {
+  DRAFT
+  ACTIVE
+  ARCHIVED // exclusão lógica: some do site, preserva cliques e histórico
+}
+
+enum OfferStatus {
+  NONE // preço normal, sem afirmação de promoção
+  VERIFIED // oferta conferida manualmente em offer_checked_at
+  EXPIRED
+}
+
+model User {
+  id           Int       @id @default(autoincrement())
+  email        String    @unique @db.VarChar(191)
+  name         String    @db.VarChar(120)
+  passwordHash String    @map("password_hash") @db.VarChar(255)
+  role         Role      @default(EDITOR)
+  isActive     Boolean   @default(true) @map("is_active")
+  lastLoginAt  DateTime? @map("last_login_at")
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
+
+  sessions      Session[]
+  priceEntries  PriceHistory[]
+
+  @@map("users")
+}
+
+// Sessão opaca: o cookie leva um token aleatório; aqui fica só o SHA-256 dele.
+// Vazamento do banco não entrega sessões válidas, e logout/revogação é um DELETE.
+model Session {
+  id        String   @id @db.Char(64)
+  userId    Int      @map("user_id")
+  expiresAt DateTime @map("expires_at")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+  @@map("sessions")
+}
+
+model Category {
+  id          Int      @id @default(autoincrement())
+  slug        String   @unique @db.VarChar(191)
+  name        String   @db.VarChar(80)
+  description String?  @db.VarChar(500)
+  imageUrl    String?  @map("image_url") @db.VarChar(1000)
+  sortOrder   Int      @default(0) @map("sort_order")
+  isActive    Boolean  @default(true) @map("is_active")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  products Product[]
+
+  @@index([isActive, sortOrder])
+  @@map("categories")
+}
+
+model Store {
+  id         Int      @id @default(autoincrement())
+  slug       String   @unique @db.VarChar(191)
+  name       String   @db.VarChar(80)
+  websiteUrl String   @map("website_url") @db.VarChar(500)
+  isActive   Boolean  @default(true) @map("is_active")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  links  AffiliateLink[]
+  clicks Click[]
+
+  @@map("stores")
+}
+
+model Product {
+  id               Int           @id @default(autoincrement())
+  slug             String        @unique @db.VarChar(191)
+  name             String        @db.VarChar(200)
+  summary          String?       @db.VarChar(300)
+  description      String        @db.Text
+  curatorNote      String?       @map("curator_note") @db.Text // bloco "Por que vale"
+  keywords         String?       @db.VarChar(500) // termos extras para a busca
+  categoryId       Int           @map("category_id")
+  status           ProductStatus @default(DRAFT)
+  isFeatured       Boolean       @default(false) @map("is_featured")
+  isTrending       Boolean       @default(false) @map("is_trending")
+  publishedAt      DateTime?     @map("published_at")
+  createdAt        DateTime      @default(now()) @map("created_at")
+  updatedAt        DateTime      @updatedAt @map("updated_at")
+
+  category Category        @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  images   ProductImage[]
+  links    AffiliateLink[]
+  clicks   Click[]
+
+  @@index([status, publishedAt])
+  @@index([status, isFeatured])
+  @@index([status, isTrending])
+  @@index([categoryId, status])
+  @@map("products")
+}
+
+model ProductImage {
+  id        Int      @id @default(autoincrement())
+  productId Int      @map("product_id")
+  url       String   @db.VarChar(1000)
+  alt       String   @db.VarChar(200)
+  width     Int?
+  height    Int?
+  sortOrder Int      @default(0) @map("sort_order") // 0 = imagem principal
+  credit    String?  @db.VarChar(200) // origem/direitos da imagem
+  createdAt DateTime @default(now()) @map("created_at")
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([productId, sortOrder])
+  @@map("product_images")
+}
+
+// Um produto tem no máximo um link por loja. "Principal" é garantido pelo serviço
+// (MySQL não tem índice único parcial) dentro de uma transação.
+model AffiliateLink {
+  id             Int         @id @default(autoincrement())
+  productId      Int         @map("product_id")
+  storeId        Int         @map("store_id")
+  url            String      @db.VarChar(2048)
+  isPrimary      Boolean     @default(false) @map("is_primary")
+  isActive       Boolean     @default(true) @map("is_active")
+  // Preço atual em centavos (inteiro: sem erro de arredondamento). Null = não exibir preço.
+  priceCents     Int?        @map("price_cents")
+  priceCheckedAt DateTime?   @map("price_checked_at")
+  offerStatus    OfferStatus @default(NONE) @map("offer_status")
+  offerCheckedAt DateTime?   @map("offer_checked_at")
+  createdAt      DateTime    @default(now()) @map("created_at")
+  updatedAt      DateTime    @updatedAt @map("updated_at")
+
+  product Product        @relation(fields: [productId], references: [id], onDelete: Restrict)
+  store   Store          @relation(fields: [storeId], references: [id], onDelete: Restrict)
+  prices  PriceHistory[]
+  clicks  Click[]
+
+  @@unique([productId, storeId])
+  @@index([storeId])
+  @@index([offerStatus])
+  @@map("affiliate_links")
+}
+
+// Só inserção: cada preço conferido vira uma linha. "Preço anterior" exibido no site
+// sai daqui — se não houver registro anterior, nada é mostrado.
+model PriceHistory {
+  id              BigInt   @id @default(autoincrement())
+  affiliateLinkId Int      @map("affiliate_link_id")
+  priceCents      Int      @map("price_cents")
+  checkedAt       DateTime @default(now()) @map("checked_at")
+  recordedById    Int?     @map("recorded_by_id")
+  source          String?  @db.VarChar(300) // como foi conferido (ex.: "página da loja")
+
+  link       AffiliateLink @relation(fields: [affiliateLinkId], references: [id], onDelete: Cascade)
+  recordedBy User?         @relation(fields: [recordedById], references: [id], onDelete: SetNull)
+
+  @@index([affiliateLinkId, checkedAt])
+  @@map("price_history")
+}
+
+// Clique em "Ver na loja". Sem IP nem identificador do visitante (LGPD: dado mínimo).
+// product_id e store_id são redundantes com o link de propósito: agregações sem JOIN.
+model Click {
+  id              BigInt   @id @default(autoincrement())
+  affiliateLinkId Int      @map("affiliate_link_id")
+  productId       Int      @map("product_id")
+  storeId         Int      @map("store_id")
+  referrerHost    String?  @map("referrer_host") @db.VarChar(191)
+  utmSource       String?  @map("utm_source") @db.VarChar(100)
+  createdAt       DateTime @default(now()) @map("created_at")
+
+  link    AffiliateLink @relation(fields: [affiliateLinkId], references: [id], onDelete: Restrict)
+  product Product       @relation(fields: [productId], references: [id], onDelete: Restrict)
+  store   Store         @relation(fields: [storeId], references: [id], onDelete: Restrict)
+
+  @@index([productId, createdAt])
+  @@index([storeId, createdAt])
+  @@index([createdAt])
+  @@index([affiliateLinkId])
+  @@map("clicks")
+}

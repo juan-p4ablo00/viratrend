@@ -1,0 +1,78 @@
+/*
+ * Design tokens da ViraTrend — fonte: docs/brand/ViraTrend-Identidade.html (seções 05, 06 e 11).
+ * Não invente cores aqui: qualquer token novo entra primeiro no brandbook.
+ */
+@import 'tailwindcss';
+
+@theme {
+  --color-midnight: #101426;
+  --color-noite: #1d2240;
+  --color-lime: #c8f36a;
+  --color-lime-soft: #eefbcf;
+  --color-electric: #765bff; /* marca, ícones, display — não usar em texto pequeno */
+  --color-electric-deep: #5b3fe8; /* texto/links sobre off-white (5,8:1) */
+  --color-lilas: #e6e0ff;
+  --color-off: #f5f4f0;
+  --color-brasa: #ff5a36; /* SOMENTE queda de preço comprovada */
+  --color-nevoa: #6b6f84; /* texto secundário sobre claro (4,5:1) */
+  --color-nevoa-claro: #8b8fa3; /* texto secundário sobre midnight (5,7:1) */
+  --color-linha: #dedcd3;
+
+  --font-display: var(--font-bricolage), system-ui, sans-serif;
+  --font-sans: var(--font-instrument), system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+
+  --radius-s: 6px;
+  --radius-m: 12px;
+  --radius-l: 20px;
+
+  --shadow-hard: 4px 4px 0 var(--color-midnight);
+  --shadow-soft: 0 12px 32px -12px rgb(16 20 38 / 0.28);
+
+  --ease-salto: cubic-bezier(0.2, 0.9, 0.1, 1);
+  --ease-pulo: cubic-bezier(0.3, 1.6, 0.5, 1);
+}
+
+/* Quina: canto superior direito cortado. Tamanho via --q (padrão 22px). */
+@utility quina {
+  clip-path: polygon(0 0, calc(100% - var(--q, 22px)) 0, 100% var(--q, 22px), 100% 100%, 0 100%);
+}
+
+/* Título display: Bricolage condensada, como no brandbook. */
+@utility display {
+  font-family: var(--font-display);
+  font-weight: 760;
+  font-stretch: 86%;
+  letter-spacing: -0.012em;
+  line-height: 0.94;
+}
+
+/* Preço: Geist Mono com algarismos tabulares. */
+@utility tabular {
+  font-family: var(--font-mono);
+  font-feature-settings: 'tnum';
+}
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+  }
+  body {
+    background: var(--color-off);
+    color: var(--color-midnight);
+    font-family: var(--font-sans);
+  }
+  :focus-visible {
+    outline: 3px solid var(--color-electric);
+    outline-offset: 3px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}

@@ -1,0 +1,1228 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ViraTrend — Identidade Visual & Design System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,200..800&family=Instrument+Sans:wdth,wght@75..100,400..700&family=Geist+Mono:wght@400..700&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-6 -14 120 120'%3E%3Crect x='-6' y='-14' width='120' height='120' rx='24' fill='%23101426'/%3E%3Cpath fill='%23C8F36A' d='M0 16C0 7.2 7.2 0 16 0H56L100 44V84C100 92.8 92.8 100 84 100H16C7.2 100 0 92.8 0 84Z'/%3E%3Cpath fill='%23765BFF' d='M64 -8H108V36Z'/%3E%3C/svg%3E">
+<style>
+/* ============ TOKENS (fonte da verdade — espelhados no bloco Tailwind da seção 11) ============ */
+:root{
+  --midnight:#101426; --noite:#1D2240; --lime:#C8F36A; --lime-soft:#EEFBCF;
+  --purple:#765BFF; --purple-deep:#5B3FE8; --lilas:#E6E0FF; --off:#F5F4F0;
+  --brasa:#FF5A36; --nevoa:#8B8FA3; --nevoa-d:#6B6F84; --linha:#DEDCD3; --white:#FFFFFF;
+  --f-display:"Bricolage Grotesque",system-ui,sans-serif;
+  --f-text:"Instrument Sans",system-ui,sans-serif;
+  --f-mono:"Geist Mono",ui-monospace,monospace;
+  --r-s:6px; --r-m:12px; --r-l:20px; --r-pill:999px;
+  --sh-hard:4px 4px 0 var(--midnight); --sh-soft:0 12px 32px -12px rgb(16 20 38 / .28);
+  --ease-salto:cubic-bezier(.2,.9,.1,1); --ease-pulo:cubic-bezier(.3,1.6,.5,1);
+  --grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E");
+  --pattern:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='36' height='36'%3E%3Cpath d='M14 10h12v12z' fill='%23C8F36A'/%3E%3C/svg%3E");
+}
+*{box-sizing:border-box;margin:0}
+html{scroll-behavior:smooth}
+body{background:var(--off);color:var(--midnight);font:400 16px/1.55 var(--f-text);-webkit-font-smoothing:antialiased}
+img,svg{display:block}
+a{color:inherit}
+.wrap{max-width:1240px;margin:0 auto;padding:0 32px}
+.disp{font-family:var(--f-display);font-weight:760;font-stretch:86%;letter-spacing:-.012em;line-height:.94;font-variation-settings:"opsz" 96}
+.mono{font-family:var(--f-mono);font-feature-settings:"tnum"}
+.eyebrow{font:600 12px/1 var(--f-mono);letter-spacing:.14em;text-transform:uppercase}
+.mark{background:linear-gradient(transparent 58%,var(--lime) 58% 92%,transparent 0);padding:0 .08em}
+.muted{color:var(--nevoa-d)}
+.dark{background:var(--midnight);color:var(--off);position:relative;isolation:isolate}
+.dark::before{content:"";position:absolute;inset:0;background:var(--grain);opacity:.07;z-index:-1;pointer-events:none}
+.dark .muted{color:var(--nevoa)}
+.tri{display:inline-block;width:.62em;height:.62em;background:currentColor;clip-path:polygon(0 0,100% 0,100% 100%);vertical-align:.12em}
+
+/* nav do documento */
+.docnav{position:sticky;top:0;z-index:50;background:rgb(245 244 240 / .9);backdrop-filter:blur(10px);border-bottom:1px solid var(--linha)}
+.docnav .wrap{display:flex;align-items:center;gap:24px;height:56px;overflow-x:auto}
+.docnav svg{height:22px;width:auto;flex:none}
+.docnav nav{display:flex;gap:18px;white-space:nowrap}
+.docnav nav a{font:500 12px var(--f-mono);text-decoration:none;color:var(--nevoa-d)}
+.docnav nav a:hover{color:var(--purple-deep)}
+
+/* seções */
+section{padding:112px 0}
+.sec-head{display:grid;grid-template-columns:120px 1fr;gap:24px;margin-bottom:56px;align-items:end}
+.sec-num{font:500 13px var(--f-mono);color:var(--purple-deep);border-top:2px solid currentColor;padding-top:10px}
+.dark .sec-num{color:var(--lime)}
+.sec-head h2{font-size:clamp(44px,6.4vw,92px)}
+.sec-head p{max-width:720px;margin-top:16px;font-size:18px}
+.grid{display:grid;gap:24px}
+.g2{grid-template-columns:repeat(2,1fr)} .g3{grid-template-columns:repeat(3,1fr)} .g4{grid-template-columns:repeat(4,1fr)}
+@media (max-width:900px){.g2,.g3,.g4{grid-template-columns:1fr}.sec-head{grid-template-columns:1fr}}
+.panel{background:var(--white);border:1px solid var(--linha);border-radius:var(--r-l);padding:28px}
+.dark .panel{background:var(--noite);border-color:#2B3157}
+.panel h3{font:700 20px/1.2 var(--f-display);font-stretch:85%;margin-bottom:10px}
+.panel p+p{margin-top:10px}
+.cap{font:500 11px/1.4 var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--nevoa-d);margin-top:12px}
+.dark .cap{color:var(--nevoa)}
+ul.clean{list-style:none;padding:0} ul.clean li{padding:8px 0;border-bottom:1px solid var(--linha)} .dark ul.clean li{border-color:#2B3157}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--linha);vertical-align:top}
+th{font:600 11px var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--nevoa-d)}
+.ok{color:#2E7D32;font-weight:600}.no{color:var(--brasa);font-weight:600}
+code,pre{font-family:var(--f-mono);font-size:13px}
+pre{background:var(--midnight);color:var(--lime-soft);padding:24px;border-radius:var(--r-m);overflow:auto;line-height:1.6}
+
+/* ============ ELEMENTOS PROPRIETÁRIOS ============ */
+/* Quina: canto superior direito cortado + "salto" (triângulo deslocado) */
+.q{position:relative;--q:22px;--g:7px}
+.cut{clip-path:polygon(0 0,calc(100% - var(--q)) 0,100% var(--q),100% 100%,0 100%)}
+.spk{position:absolute;top:calc(var(--g)*-1);right:calc(var(--g)*-1);width:var(--q);height:var(--q);background:var(--purple);clip-path:polygon(0 0,100% 0,100% 100%);pointer-events:none}
+/* Fita (ticker) */
+.fita{overflow:hidden;white-space:nowrap;background:var(--lime);color:var(--midnight);font:700 13px/1 var(--f-mono);letter-spacing:.1em;text-transform:uppercase;padding:10px 0}
+.fita>span{display:inline-block;animation:fita 18s linear infinite;padding-right:0}
+.fita b{font-weight:700;margin:0 18px}
+@keyframes fita{to{transform:translateX(-50%)}}
+/* Sinal (medidor de alta) */
+.sinal{display:inline-flex;align-items:flex-end;gap:3px;height:18px}
+.sinal i{width:5px;background:currentColor;opacity:.25;border-radius:1px}
+.sinal i:nth-child(1){height:30%}.sinal i:nth-child(2){height:48%}.sinal i:nth-child(3){height:66%}.sinal i:nth-child(4){height:84%}.sinal i:nth-child(5){height:100%}
+.sinal[data-n="3"] i:nth-child(-n+3),.sinal[data-n="4"] i:nth-child(-n+4),.sinal[data-n="5"] i{opacity:1}
+/* Preço */
+.price{font-family:var(--f-mono);font-weight:700;letter-spacing:-.04em;font-feature-settings:"tnum";line-height:1;white-space:nowrap}
+.price small{font-size:.42em;font-weight:500;letter-spacing:0;margin-right:.15em;vertical-align:.95em}
+.price sup{font-size:.45em;vertical-align:.95em}
+.was{font-family:var(--f-mono);text-decoration:line-through;text-decoration-color:var(--brasa);text-decoration-thickness:2px;opacity:.7}
+/* chips e badges */
+.chip{display:inline-flex;align-items:center;gap:6px;height:26px;padding:0 10px;border-radius:var(--r-pill);font:600 11px/1 var(--f-mono);letter-spacing:.06em;text-transform:uppercase;border:1.5px solid currentColor;white-space:nowrap}
+.badge{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:var(--r-s);font:700 11px/1 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;white-space:nowrap}
+.b-alta{background:var(--lime);color:var(--midnight)} .b-achado{background:var(--purple);color:var(--white)} .b-drop{background:var(--brasa);color:var(--midnight)} .b-dark{background:var(--midnight);color:var(--lime)} .b-line{border:1.5px solid var(--linha);color:var(--nevoa-d)}
+/* botões */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:48px;padding:0 22px;border-radius:var(--r-m);font:700 15px/1 var(--f-text);border:0;cursor:pointer;text-decoration:none;transition:transform .16s var(--ease-salto),box-shadow .16s var(--ease-salto),background .16s}
+.btn-primary{background:var(--lime);color:var(--midnight);box-shadow:var(--sh-hard)}
+.btn-primary:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--midnight)}
+.btn-primary:active{transform:translate(2px,2px);box-shadow:0 0 0 var(--midnight)}
+.dark .btn-primary{box-shadow:4px 4px 0 var(--purple)}
+.btn-secondary{background:var(--purple);color:var(--white)} .btn-secondary:hover{background:var(--purple-deep)}
+.btn-ghost{background:transparent;color:inherit;border:1.5px solid currentColor}
+.btn-store{background:var(--midnight);color:var(--off);height:44px;font-size:14px}
+.btn-store:hover{background:var(--purple-deep)}
+.btn-sm{height:36px;padding:0 14px;font-size:13px;border-radius:var(--r-s)}
+.btn:focus-visible,.search input:focus-visible{outline:3px solid var(--purple);outline-offset:3px}
+/* busca */
+.search{display:flex;align-items:center;gap:10px;height:56px;padding:0 8px 0 18px;background:var(--white);border:2px solid var(--midnight);border-radius:var(--r-m);box-shadow:var(--sh-hard)}
+.search input{flex:1;border:0;background:none;font:500 16px var(--f-text);color:var(--midnight);min-width:0}
+.search input::placeholder{color:var(--nevoa-d)}
+.search .btn{height:40px}
+
+/* ============ PRODUTO (card) ============ */
+.pcard{--q:22px;position:relative;background:var(--white);border-radius:var(--r-l);padding:12px;border:1px solid var(--linha);transition:transform .24s var(--ease-salto),box-shadow .24s}
+.pcard:hover{transform:translateY(-4px);box-shadow:var(--sh-soft)}
+.pcard .img{clip-path:polygon(0 0,calc(100% - var(--q)) 0,100% var(--q),100% 100%,0 100%);aspect-ratio:1;border-radius:var(--r-m) 0 var(--r-m) var(--r-m);display:grid;place-items:center;background:var(--lime-soft)}
+.pcard .img svg{width:72%;height:72%}
+.pcard .spk{top:5px;right:5px}
+.pcard .meta{display:flex;justify-content:space-between;align-items:center;margin:12px 4px 6px}
+.pcard h4{font:600 15px/1.3 var(--f-text);margin:0 4px 10px;min-height:2.6em}
+.pcard .row{display:flex;justify-content:space-between;align-items:flex-end;margin:0 4px 4px}
+.pcard .price{font-size:26px}
+.pcard .seen{font:500 10px var(--f-mono);color:var(--nevoa-d);text-transform:uppercase;letter-spacing:.06em}
+
+/* ============ POSTS (escalam com o container: cqw) ============ */
+.post,.story{container-type:inline-size;position:relative;overflow:hidden;width:100%;font-family:var(--f-text);isolation:isolate}
+.post{aspect-ratio:4/5} .story{aspect-ratio:9/16}
+.post [contenteditable],.story [contenteditable]{outline:none;border-radius:2px}
+.post [contenteditable]:hover,.story [contenteditable]:hover{box-shadow:0 0 0 1.5px var(--purple)}
+.slot{display:grid;place-items:center;background-size:cover;background-position:center;cursor:copy}
+.slot.has-img>svg{visibility:hidden}
+.t-disp{font-family:var(--f-display);font-weight:780;font-stretch:82%;letter-spacing:-.018em;line-height:.9;font-variation-settings:"opsz" 96}
+.t-tag{font:700 2.6cqw/1 var(--f-mono);letter-spacing:.12em;text-transform:uppercase}
+.post .logo-s{position:absolute;width:13cqw}
+.post .handle{font:600 2.4cqw var(--f-mono);letter-spacing:.06em}
+.post .store{display:inline-flex;align-items:center;height:5.4cqw;padding:0 2.4cqw;border-radius:99px;border:.4cqw solid currentColor;font:700 2.3cqw/1 var(--f-mono);letter-spacing:.08em;text-transform:uppercase}
+.post .cta{display:inline-flex;align-items:center;gap:1.4cqw;height:8cqw;padding:0 3.6cqw;border-radius:1.8cqw;font:700 3.2cqw/1 var(--f-text)}
+.post .tick{font:700 2.4cqw/1 var(--f-mono);letter-spacing:.12em;text-transform:uppercase;white-space:nowrap;overflow:hidden;padding:2.2cqw 0}
+.post .tick span{display:inline-block;animation:fita 14s linear infinite}
+.post .fine{font:500 1.9cqw/1.3 var(--f-mono);letter-spacing:.04em;text-transform:uppercase;opacity:.7}
+
+/* T1 Viral do momento */
+.t1{background:var(--midnight);color:var(--off)}
+.t1 .tick{background:var(--lime);color:var(--midnight)}
+.t1 .stage{position:absolute;left:6cqw;right:6cqw;top:16cqw;height:58cqw;background:var(--purple);clip-path:polygon(0 0,calc(100% - 12cqw) 0,100% 12cqw,100% 100%,0 100%)}
+.t1 .stage svg{width:78%;height:92%}
+.t1 .spark{position:absolute;top:12cqw;right:2cqw;width:12cqw;height:12cqw;background:var(--lime);clip-path:polygon(0 0,100% 0,100% 100%)}
+.t1 .count{position:absolute;left:6cqw;top:66cqw;background:var(--lime);color:var(--midnight);padding:1.6cqw 2.4cqw;border-radius:1.4cqw;display:flex;gap:2cqw;align-items:center;font:700 2.6cqw/1 var(--f-mono)}
+.t1 .count .sinal{height:3.4cqw;gap:.5cqw}.t1 .count .sinal i{width:1cqw}
+.t1 h3{position:absolute;left:6cqw;right:6cqw;top:80cqw;font-size:12.5cqw}
+.t1 .foot{position:absolute;left:6cqw;right:6cqw;bottom:6cqw;display:flex;justify-content:space-between;align-items:flex-end}
+.t1 .price{font-size:9.5cqw;color:var(--lime)}
+
+/* T2 Achadinho */
+.t2{background:var(--off);color:var(--midnight)}
+.t2 .num{position:absolute;left:6cqw;top:6cqw;font:700 2.6cqw var(--f-mono);letter-spacing:.12em}
+.t2 .num b{display:block;font:800 16cqw/.85 var(--f-display);font-stretch:76%;letter-spacing:-.04em;color:var(--purple)}
+.t2 .frame{position:absolute;right:6cqw;top:6cqw;width:52cqw;height:62cqw;background:var(--lilas);clip-path:polygon(0 0,calc(100% - 10cqw) 0,100% 10cqw,100% 100%,0 100%)}
+.t2 .frame svg{width:86%;height:86%}
+.t2 .spark{position:absolute;right:3cqw;top:3cqw;width:10cqw;height:10cqw;background:var(--midnight);clip-path:polygon(0 0,100% 0,100% 100%)}
+.t2 h3{position:absolute;left:6cqw;top:72cqw;right:6cqw;font-size:10.5cqw}
+.t2 ul{position:absolute;left:6cqw;top:28cqw;width:32cqw;list-style:none;padding:0;font:500 2.9cqw/1.3 var(--f-text)}
+.t2 ul li{padding:1.6cqw 0;border-top:.3cqw solid var(--midnight)}
+.t2 .foot{position:absolute;left:6cqw;right:6cqw;bottom:6cqw;display:flex;justify-content:space-between;align-items:center}
+.t2 .price{font-size:8.5cqw}
+
+/* T3 Comparação */
+.t3{background:var(--off);color:var(--midnight)}
+.t3 .half{position:absolute;top:0;bottom:0;width:50%}
+.t3 .a{left:0;background:var(--lime)} .t3 .b{right:0;background:var(--midnight);color:var(--off)}
+.t3 .vs{position:absolute;left:50%;top:30cqw;transform:translate(-50%,-50%);width:13cqw;height:13cqw;border-radius:50%;background:var(--purple);color:var(--white);display:grid;place-items:center;font:800 4.6cqw var(--f-display);z-index:2}
+.t3 .slot{position:absolute;top:10cqw;height:40cqw;left:4cqw;right:4cqw}
+.t3 .slot svg{width:90%;height:100%}
+.t3 .lbl{position:absolute;top:4.5cqw;left:4cqw}
+.t3 h4{position:absolute;top:53cqw;left:4cqw;right:4cqw;font-size:6.4cqw}
+.t3 dl{position:absolute;top:70cqw;left:4cqw;right:4cqw;font:500 2.6cqw/1.2 var(--f-text)}
+.t3 dl div{display:flex;justify-content:space-between;padding:1.4cqw 0;border-top:.3cqw solid currentColor}
+.t3 dt{opacity:.7} .t3 dd{font-family:var(--f-mono);font-weight:700}
+.t3 .verdict{position:absolute;left:4cqw;right:4cqw;bottom:4cqw;background:var(--purple);color:var(--white);padding:2.4cqw 3cqw;border-radius:2cqw;font:600 3cqw/1.25 var(--f-text);z-index:2}
+.t3 .verdict b{font-family:var(--f-mono);letter-spacing:.1em;font-size:2.3cqw;display:block;margin-bottom:.6cqw;color:var(--lime)}
+
+/* T4 Lista */
+.t4{background:var(--purple);color:var(--white)}
+.t4::after{content:"";position:absolute;inset:0;background:var(--pattern);background-size:9cqw;opacity:.18;z-index:-1}
+.t4 h3{position:absolute;left:6cqw;right:6cqw;top:7cqw;font-size:11cqw}
+.t4 h3 em{font-style:normal;color:var(--lime)}
+.t4 ol{position:absolute;left:6cqw;right:6cqw;top:44cqw;list-style:none;padding:0}
+.t4 li{display:grid;grid-template-columns:9cqw 1fr auto;align-items:center;gap:3cqw;background:var(--midnight);border-radius:2cqw;padding:2cqw 3cqw;margin-bottom:2cqw;color:var(--off)}
+.t4 li b{font:800 6cqw/1 var(--f-display);color:var(--lime);font-stretch:76%}
+.t4 li span{font:600 3.2cqw/1.2 var(--f-text)}
+.t4 li .price{font-size:3.8cqw;color:var(--lime)}
+.t4 .foot{position:absolute;left:6cqw;right:6cqw;bottom:5cqw;display:flex;justify-content:space-between;align-items:center}
+
+/* T5 Oferta */
+.t5{background:var(--lime);color:var(--midnight)}
+.t5 .drop{position:absolute;left:6cqw;top:6cqw}
+.t5 .slot{position:absolute;right:-4cqw;top:12cqw;width:62cqw;height:62cqw;border-radius:50%;background:var(--white)}
+.t5 .slot svg{width:80%;height:80%}
+.t5 .pct{position:absolute;left:6cqw;top:16cqw;font:800 27cqw/.8 var(--f-display);font-stretch:76%;letter-spacing:-.05em}
+.t5 .pct sup{font-size:.4em;vertical-align:1.1em}
+.t5 h3{position:absolute;left:6cqw;top:56cqw;width:44cqw;font:700 4.6cqw/1.1 var(--f-text)}
+.t5 .box{position:absolute;left:0;right:0;bottom:0;height:28cqw;background:var(--midnight);color:var(--off);padding:4.5cqw 6cqw;display:flex;justify-content:space-between;align-items:flex-end}
+.t5 .box .was{font-size:3.4cqw;color:var(--off)}
+.t5 .box .price{font-size:12cqw;color:var(--lime)}
+.t5 .box .spark{position:absolute;right:6cqw;top:-5cqw;width:10cqw;height:10cqw;background:var(--purple);clip-path:polygon(0 0,100% 0,100% 100%)}
+
+/* Story & Reels */
+.st1{background:var(--midnight);color:var(--off)}
+.st1 .top{position:absolute;left:6cqw;right:6cqw;top:12cqw;display:flex;justify-content:space-between;align-items:center}
+.st1 h3{position:absolute;left:6cqw;right:6cqw;top:26cqw;font-size:13cqw}
+.st1 .slot{position:absolute;left:6cqw;right:6cqw;top:82cqw;height:66cqw;background:var(--lilas);clip-path:polygon(0 0,calc(100% - 12cqw) 0,100% 12cqw,100% 100%,0 100%)}
+.st1 .slot svg{width:70%;height:90%}
+.st1 .link{position:absolute;left:50%;transform:translateX(-50%);top:154cqw;background:var(--white);color:var(--midnight);border-radius:3cqw;padding:3cqw 5cqw;font:700 4cqw var(--f-text);white-space:nowrap}
+.st1 .price{position:absolute;left:6cqw;top:66cqw;font-size:10cqw;color:var(--lime)}
+.rl{background:var(--purple);color:var(--white)}
+.rl .safe{position:absolute;left:0;right:0;top:44cqw;height:100cqw;outline:.4cqw dashed rgb(255 255 255 / .35);outline-offset:-.4cqw}
+.rl h3{position:absolute;left:7cqw;right:7cqw;top:56cqw;font-size:19cqw}
+.rl h3 em{font-style:normal;color:var(--lime)}
+.rl .slot{position:absolute;right:7cqw;top:108cqw;width:34cqw;height:34cqw;background:var(--midnight);border-radius:50%}
+.rl .slot svg{width:80%;height:80%}
+.rl .q1{position:absolute;left:7cqw;top:118cqw}
+.rl .fine{position:absolute;left:7cqw;bottom:6cqw}
+/* Carrossel */
+.carr{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;background:var(--midnight);padding:4px;border-radius:var(--r-m)}
+.cs{background:var(--off);color:var(--midnight)}
+.cs .n{position:absolute;right:6cqw;top:6cqw;font:700 2.6cqw var(--f-mono)}
+.cs h3{position:absolute;left:6cqw;right:6cqw;top:14cqw;font-size:12cqw}
+.cs .line{position:absolute;left:0;right:0;top:62cqw;height:1.4cqw;background:var(--purple)}
+.cs .dot{position:absolute;top:56cqw;width:12cqw;height:12cqw;background:var(--purple);clip-path:polygon(0 0,100% 0,100% 100%)}
+.cs p{position:absolute;left:6cqw;right:6cqw;top:74cqw;font:500 4cqw/1.3 var(--f-text)}
+.cs .slot{position:absolute;left:6cqw;right:6cqw;top:14cqw;height:44cqw;background:var(--lime-soft);border-radius:3cqw}
+.cs .slot svg{width:70%;height:90%}
+/* destaques */
+.hl{display:flex;gap:18px;flex-wrap:wrap}
+.hl figure{display:grid;justify-items:center;gap:8px;font:500 12px var(--f-text)}
+.hl .c{width:76px;height:76px;border-radius:50%;padding:3px;border:2px solid var(--linha);display:grid}
+.hl .c div{border-radius:50%;display:grid;place-items:center;font:800 15px/1 var(--f-display);font-stretch:78%;letter-spacing:-.01em}
+
+/* Phones & browser */
+.phone{width:340px;border-radius:44px;background:var(--midnight);padding:12px;box-shadow:var(--sh-soft);flex:none}
+.screen{color:var(--midnight);border-radius:34px;overflow:hidden;background:var(--white);height:690px;overflow-y:auto;scrollbar-width:none;position:relative}
+.ig-head{padding:44px 16px 12px;color:var(--midnight)}
+.ig-top{display:flex;align-items:center;gap:18px}
+.ig-av{width:84px;height:84px;border-radius:50%;flex:none}
+.ig-stats{display:flex;gap:18px;font:400 12px/1.2 var(--f-text);text-align:center}
+.ig-stats b{display:block;font-size:16px}
+.ig-bio{font:400 13px/1.4 var(--f-text);margin-top:10px}
+.ig-bio b{font-weight:700}
+.ig-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px}
+.ig-grid>div{min-width:0}
+.tt-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px}
+.browser{border-radius:var(--r-l);overflow:hidden;border:1px solid var(--linha);box-shadow:var(--sh-soft);background:var(--off)}
+.browser .bar{height:38px;background:#E9E7E0;display:flex;align-items:center;gap:8px;padding:0 14px}
+.browser .bar i{width:11px;height:11px;border-radius:50%;background:#CFCCC2}
+.browser .bar span{margin-left:14px;font:500 12px var(--f-mono);background:var(--white);border-radius:6px;padding:4px 12px;color:var(--nevoa-d)}
+
+/* site */
+.s-header{display:flex;align-items:center;gap:28px;padding:18px 32px;background:var(--off);border-bottom:1px solid var(--linha)}
+.s-header nav{display:flex;gap:22px;font:600 14px var(--f-text)}
+.s-header nav a{text-decoration:none}
+.s-header nav a.on{box-shadow:inset 0 -3px 0 var(--lime)}
+.s-hero{display:grid;grid-template-columns:1.15fr .85fr;gap:40px;padding:56px 32px 40px;align-items:center}
+.s-hero h1{font-size:76px}
+.s-hero .chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.s-hero .chips span{font:500 13px var(--f-text);padding:6px 12px;border-radius:99px;background:var(--white);border:1px solid var(--linha)}
+.radar{position:relative;height:400px}
+.radar .pcard{position:absolute;width:220px}
+.radar .pcard:nth-child(1){left:0;top:40px;transform:rotate(-5deg)}
+.radar .pcard:nth-child(2){left:140px;top:0;transform:rotate(3deg);z-index:2}
+.radar .meter{position:absolute;left:30px;bottom:6px;z-index:3;background:var(--midnight);color:var(--off);border-radius:var(--r-m);padding:14px 16px;display:flex;gap:14px;align-items:center;box-shadow:4px 4px 0 var(--purple)}
+.radar .meter .sinal{color:var(--lime)}
+.s-cats{display:grid;grid-template-columns:repeat(6,1fr);gap:14px;padding:8px 32px 40px}
+.cat{clip-path:polygon(0 0,calc(100% - 20px) 0,100% 20px,100% 100%,0 100%);position:relative;height:120px;border-radius:var(--r-m);padding:14px;display:flex;flex-direction:column;justify-content:space-between;font:700 15px/1.1 var(--f-display);font-stretch:85%;overflow:hidden}
+.cat small{font:500 11px var(--f-mono);opacity:.7}
+.s-row{padding:0 32px 48px}
+.s-row-h{display:flex;justify-content:space-between;align-items:end;margin-bottom:18px}
+.s-row-h h2{font-size:40px}
+.s-prods{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+@media (max-width:1000px){.s-hero{grid-template-columns:1fr}.s-cats{grid-template-columns:repeat(3,1fr)}.s-prods{grid-template-columns:repeat(2,1fr)}.s-hero h1{font-size:52px}}
+.m-head{padding:42px 16px 10px;display:flex;justify-content:space-between;align-items:center;background:var(--off)}
+.m-tabs{position:absolute;left:0;right:0;bottom:0;height:72px;background:var(--midnight);display:grid;grid-template-columns:repeat(5,1fr);padding:8px 6px 16px}
+.m-tabs a{display:grid;justify-items:center;align-content:center;gap:5px;color:var(--nevoa);font:600 10px var(--f-text);text-decoration:none;position:relative}
+.m-tabs a.on{color:var(--lime)}
+.m-tabs a.on::before{content:"";position:absolute;top:-8px;width:16px;height:16px;background:var(--lime);clip-path:polygon(0 0,100% 0,100% 100%)}
+.m-tabs svg{width:20px;height:20px}
+
+/* motion demos */
+.stage-m{height:240px;border-radius:var(--r-l);display:grid;place-items:center;position:relative;overflow:hidden}
+.replay{position:absolute;right:12px;bottom:12px}
+.lg-intro{width:72%}
+.play .lg-body{animation:lgBody .5s var(--ease-salto) both}
+.play .lg-spark{animation:lgSpark .55s .32s var(--ease-pulo) both}
+.play .lg-word{animation:lgWord .6s .42s var(--ease-salto) both}
+.lg-body,.lg-spark{transform-box:fill-box;transform-origin:center}
+@keyframes lgBody{from{transform:scale(.4);opacity:0}}
+@keyframes lgSpark{from{transform:translate(-8%,8%) scale(.2);opacity:0}}
+@keyframes lgWord{from{clip-path:inset(0 100% 0 0);transform:translateX(-14px)}to{clip-path:inset(0 0 0 0)}}
+.flip{perspective:400px;display:grid;justify-items:center;gap:8px}
+.flip .price{font-size:64px;color:var(--lime);display:block}
+.play .flip .price{animation:flipIn .5s .35s var(--ease-pulo) both}
+.play .flip .was{animation:strike .35s both}
+@keyframes flipIn{from{transform:rotateX(-90deg);opacity:0}}
+@keyframes strike{from{text-decoration-color:transparent}}
+.cardin .pcard{width:200px}
+.play.cardin .pcard{animation:cardIn .5s var(--ease-salto) both}
+.play.cardin .spk{animation:lgSpark .45s .3s var(--ease-pulo) both}
+@keyframes cardIn{from{clip-path:polygon(0 0,0 0,0 0,0 100%,0 100%);transform:translateY(16px)}to{clip-path:polygon(0 0,100% 0,100% 0,100% 100%,0 100%)}}
+.wipe{position:absolute;inset:0;background:var(--lime);clip-path:polygon(100% 0,100% 0,100% 0);z-index:2}
+.play .wipe{animation:wipe 1s var(--ease-salto) both}
+@keyframes wipe{0%{clip-path:polygon(100% 0,100% 0,100% 0)}45%{clip-path:polygon(-100% 0,100% 0,100% 200%)}100%{clip-path:polygon(100% 100%,100% 100%,100% 100%)}}
+.story-board{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+.story-board figure{aspect-ratio:9/16;border-radius:var(--r-m);position:relative;overflow:hidden;display:grid;place-items:center}
+.story-board figcaption{position:absolute;left:8px;bottom:8px;right:8px;font:500 10px/1.3 var(--f-mono);text-transform:uppercase}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* logo boards */
+.lb{border-radius:var(--r-l);display:grid;place-items:center;padding:40px;min-height:220px;position:relative}
+.lb svg{max-width:100%}
+.lb .cap{position:absolute;left:18px;bottom:14px;margin:0}
+.dl{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+.dont{position:relative}
+.dont::after{content:"";position:absolute;inset:16px;background:linear-gradient(to top right,transparent calc(50% - 1.5px),var(--brasa) calc(50% - 1.5px) calc(50% + 1.5px),transparent 0);pointer-events:none;opacity:.8}
+.swatch{border-radius:var(--r-l);overflow:hidden;border:1px solid var(--linha);background:var(--white)}
+.swatch .c{height:150px;padding:16px;display:flex;align-items:flex-end;font:800 28px/1 var(--f-display);font-stretch:78%}
+.swatch dl{padding:14px 16px;font:500 12px/1.7 var(--f-mono)}
+.swatch dl div{display:flex;justify-content:space-between}
+.swatch dt{color:var(--nevoa-d)}
+.ratio{display:flex;height:64px;border-radius:var(--r-m);overflow:hidden;font:600 11px var(--f-mono)}
+.ratio div{display:flex;align-items:flex-end;padding:8px}
+.pair{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-radius:var(--r-m);font:700 16px var(--f-text)}
+.pair span{font:600 12px var(--f-mono)}
+.typescale>div{display:grid;grid-template-columns:150px 1fr;gap:20px;align-items:baseline;padding:18px 0;border-bottom:1px solid var(--linha)}
+.typescale code{color:var(--nevoa-d);font-size:12px}
+.stamp{width:180px;animation:spin 24s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.hero-cover{min-height:min(92vh,900px);display:grid;align-content:center;padding:80px 0;overflow:hidden}
+.hero-cover h1{font-size:clamp(48px,7.6vw,118px)}
+.ref-card{border-top:3px solid var(--midnight);padding-top:14px}
+.ref-card h4{font:700 18px/1.2 var(--f-display);font-stretch:85%;margin-bottom:6px}
+.ref-card p{font-size:14px}
+.ref-card .take{margin-top:10px;font:500 12px/1.5 var(--f-mono);color:var(--purple-deep)}
+.prop{border-radius:var(--r-l);overflow:hidden;border:1px solid var(--linha);background:var(--white)}
+.prop .lb{border-radius:0;min-height:260px}
+.prop .body{padding:22px}
+.prop .score{display:flex;gap:6px;margin-top:12px;flex-wrap:wrap}
+.do,.dn{padding:14px 16px;border-radius:var(--r-m);font-size:14px}
+.do{background:var(--lime-soft)} .dn{background:#FFE7E1}
+.do b,.dn b{font:700 11px var(--f-mono);letter-spacing:.1em;display:block;margin-bottom:6px}
+.photo-ex{aspect-ratio:4/5;border-radius:var(--r-m);position:relative;overflow:hidden;display:grid;place-items:center}
+.photo-ex svg{width:62%}
+</style>
+</head>
+<body>
+
+<!-- ============ SPRITE: geometria oficial da marca ============ -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <!-- Símbolo "Quina": bloco 100×100 com o canto cortado; o canto salta 8u para cima/direita -->
+  <symbol id="q" viewBox="0 -8 108 108">
+    <path style="fill:var(--qb,currentColor)" d="M0 16C0 7.2 7.2 0 16 0H56L100 44V84C100 92.8 92.8 100 84 100H16C7.2 100 0 92.8 0 84Z"/>
+    <path style="fill:var(--qs,#765BFF)" d="M64 -8H108V36Z"/>
+  </symbol>
+  <!-- Wordmark desenhado em traço (peso = stroke-width 13). x-height 57u, ascendente 80u -->
+  <symbol id="w" viewBox="-2 14 440 92">
+    <polygon style="fill:var(--wc,currentColor)" points="0,43.5 14.5,43.5 24,78 33.5,43.5 48,43.5 31,100.5 17,100.5"/>
+    <g fill="none" stroke-width="13" style="stroke:var(--wc,currentColor)">
+      <path d="M62.5 43.5V100.5"/>
+      <path d="M83.5 43.5V100.5M83.5 72A22 22 0 0 1 105.5 50"/>
+      <circle cx="140" cy="72" r="22"/><path d="M162 43.5V100.5"/>
+      <path d="M190.5 26V100.5M175.5 50H207.5"/>
+      <path d="M219.5 43.5V100.5M219.5 72A22 22 0 0 1 241.5 50"/>
+      <path d="M254 72H298M298 72A22 22 0 1 0 291.6 87.6"/>
+      <path d="M319 43.5V100.5M319 72A22 22 0 0 1 363 72V100.5"/>
+      <circle cx="406" cy="72" r="22"/><path d="M428 20V100.5"/>
+    </g>
+    <polygon style="fill:var(--wd,#765BFF)" points="53,15 71,15 71,33"/>
+  </symbol>
+  <!-- Assinatura horizontal (principal) -->
+  <symbol id="lh" viewBox="0 12 546 92">
+    <use href="#q" x="0" y="14.1" width="86.4" height="86.4"></use>
+    <use href="#w" x="106" y="14" width="440" height="92"></use>
+  </symbol>
+  <!-- Assinatura vertical -->
+  <symbol id="lv" viewBox="-6 -10 448 290">
+    <use href="#q" x="143" y="0" width="150" height="150"></use>
+    <use href="#w" x="-2" y="180" width="440" height="92"></use>
+  </symbol>
+  <!-- Avatar / favicon -->
+  <symbol id="av" viewBox="0 0 200 200">
+    <rect width="200" height="200" style="fill:var(--ab,#101426)"/>
+    <use href="#q" x="44" y="52" width="104" height="104" style="--qb:var(--aq,#C8F36A)"></use>
+  </symbol>
+  <!-- Proposta 3: monograma VT (exploração) -->
+  <symbol id="vt" viewBox="0 0 100 100">
+    <path style="fill:var(--wc,currentColor)" d="M0 0H100V20H66L50 100L34 20H0Z"/>
+  </symbol>
+
+  <!-- Ilustrações placeholder de produto (substituir por foto real) -->
+  <symbol id="p-fone" viewBox="0 0 200 200">
+    <ellipse cx="100" cy="170" rx="60" ry="8" fill="#101426" opacity=".18"/>
+    <rect x="44" y="66" width="112" height="100" rx="44" fill="#FFFFFF"/>
+    <path d="M44 108H156" stroke="#101426" stroke-opacity=".14" stroke-width="2"/>
+    <rect x="92" y="116" width="16" height="4" rx="2" fill="#C8F36A"/>
+    <g transform="rotate(22 140 46)"><rect x="128" y="34" width="22" height="50" rx="11" fill="#F5F4F0"/><circle cx="139" cy="38" r="14" fill="#FFFFFF"/></g>
+  </symbol>
+  <symbol id="p-serum" viewBox="0 0 200 200">
+    <ellipse cx="100" cy="172" rx="46" ry="7" fill="#101426" opacity=".18"/>
+    <rect x="90" y="22" width="20" height="30" rx="10" fill="#101426"/>
+    <rect x="82" y="48" width="36" height="30" rx="4" fill="#101426"/>
+    <rect x="66" y="76" width="68" height="94" rx="12" fill="#765BFF"/>
+    <rect x="76" y="104" width="48" height="40" rx="3" fill="#F5F4F0"/>
+    <rect x="82" y="114" width="28" height="4" fill="#101426"/><rect x="82" y="124" width="20" height="3" fill="#101426" opacity=".5"/>
+    <rect x="72" y="84" width="6" height="74" rx="3" fill="#fff" opacity=".35"/>
+  </symbol>
+  <symbol id="p-lumi" viewBox="0 0 200 200">
+    <ellipse cx="100" cy="174" rx="48" ry="7" fill="#101426" opacity=".18"/>
+    <path d="M52 92C52 58 74 36 100 36S148 58 148 92Z" fill="#101426"/>
+    <ellipse cx="100" cy="92" rx="48" ry="7" fill="#C8F36A"/>
+    <rect x="96" y="96" width="8" height="62" fill="#101426"/>
+    <rect x="66" y="156" width="68" height="14" rx="7" fill="#101426"/>
+  </symbol>
+  <symbol id="p-watch" viewBox="0 0 200 200">
+    <ellipse cx="100" cy="176" rx="44" ry="7" fill="#101426" opacity=".18"/>
+    <rect x="76" y="20" width="48" height="160" rx="14" fill="#765BFF"/>
+    <rect x="58" y="56" width="84" height="92" rx="24" fill="#101426"/>
+    <circle cx="100" cy="102" r="26" fill="none" stroke="#C8F36A" stroke-width="7" stroke-dasharray="120 200" stroke-linecap="round" transform="rotate(-90 100 102)"/>
+    <rect x="142" y="86" width="6" height="18" rx="3" fill="#101426"/>
+  </symbol>
+  <symbol id="p-copo" viewBox="0 0 200 200">
+    <ellipse cx="100" cy="176" rx="40" ry="7" fill="#101426" opacity=".18"/>
+    <path d="M66 52H134L126 172H74Z" fill="#F5F4F0"/>
+    <rect x="60" y="36" width="80" height="20" rx="6" fill="#101426"/>
+    <rect x="112" y="10" width="7" height="34" rx="3" fill="#C8F36A" transform="rotate(12 115 27)"/>
+    <path d="M70 110H130" stroke="#765BFF" stroke-width="10"/>
+  </symbol>
+</svg>
+
+<header class="docnav">
+  <div class="wrap">
+    <svg viewBox="0 0 546 92" style="--wd:var(--purple)"><use href="#lh"/></svg>
+    <nav>
+      <a href="#auditoria">00 Auditoria</a><a href="#estrategia">01 Estratégia</a><a href="#referencias">02 Referências</a><a href="#propostas">03 Propostas</a><a href="#logo">04 Logo</a><a href="#cores">05 Cores</a><a href="#tipo">06 Tipografia</a><a href="#elementos">07 Elementos</a><a href="#foto">08 Fotografia</a><a href="#social">09 Social</a><a href="#templates">10 Templates</a><a href="#ds">11 Design System</a><a href="#site">12 Site</a><a href="#motion">13 Motion</a><a href="#arquivos">14 Arquivos</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ============ CAPA ============ -->
+<div class="dark hero-cover">
+  <div class="wrap">
+    <p class="eyebrow" style="color:var(--lime)">Brandbook · v1.0 · novembro 2026</p>
+    <svg viewBox="0 0 546 92" style="width:min(620px,90%);margin:40px 0 48px;color:var(--off);--wd:var(--lime)"><use href="#lh"/></svg>
+    <h1 class="disp">Produtos que viralizam.<br><span style="color:var(--lime)">Achados que valem a pena.</span></h1>
+    <p style="max-width:560px;margin-top:28px;font-size:18px" class="muted">Identidade visual, sistema gráfico, templates de conteúdo e design system da plataforma de descoberta ViraTrend — tudo neste arquivo.</p>
+  </div>
+</div>
+<div class="fita" aria-hidden="true"><span><b>Em alta <i class="tri"></i></b><b>Achadinho <i class="tri"></i></b><b>Vale a pena <i class="tri"></i></b><b>Viralizou <i class="tri"></i></b><b>Preço conferido <i class="tri"></i></b><b>Em alta <i class="tri"></i></b><b>Achadinho <i class="tri"></i></b><b>Vale a pena <i class="tri"></i></b><b>Viralizou <i class="tri"></i></b><b>Preço conferido <i class="tri"></i></b><b>Em alta <i class="tri"></i></b><b>Achadinho <i class="tri"></i></b><b>Vale a pena <i class="tri"></i></b><b>Viralizou <i class="tri"></i></b><b>Preço conferido <i class="tri"></i></b><b>Em alta <i class="tri"></i></b><b>Achadinho <i class="tri"></i></b><b>Vale a pena <i class="tri"></i></b><b>Viralizou <i class="tri"></i></b><b>Preço conferido <i class="tri"></i></b></span></div>
+
+<!-- ============ 00 AUDITORIA ============ -->
+<section id="auditoria">
+  <div class="wrap">
+    <div class="sec-head"><div class="sec-num">00</div><div><h2 class="disp">Auditoria do ambiente</h2><p>O que existe de fato nesta máquina e o que foi usado. Nada foi instalado.</p></div></div>
+    <div class="panel" style="padding:0;overflow:auto">
+      <table>
+        <thead><tr><th>Ferramenta</th><th>Status</th><th>Uso neste projeto</th></tr></thead>
+        <tbody>
+          <tr><td><b>EffectCraft</b> 0.21.1 (ArtCraft)</td><td class="ok">Instalado</td><td>CLI headless real: composições, camadas de texto e shape, <code>edit.pasteSvg</code> (importa o SVG do logo como shapes), render h264/webm/prores/gif e <code>file.exportLottie</code>. Caminho indicado para exportar a vinheta e as animações da seção 13 em MP4/Lottie.</td></tr>
+          <tr><td>FigCraft 0.15.1 · PhotoCraft 0.20.2 · LightCraft 0.18.1 · FilmCraft 0.15.0 · SoundCraft 0.17.0</td><td class="ok">Instalados</td><td>FigCraft converte este SVG em <code>.figcraft</code> para edição em tela; LightCraft para tratar as fotos reais de produto; FilmCraft/SoundCraft para montagem dos vídeos. Não usados nesta etapa — o pedido é um arquivo único.</td></tr>
+          <tr><td>GIMP 3</td><td class="ok">Instalado</td><td>Disponível para retoque raster. Não necessário: toda a marca é vetorial.</td></tr>
+          <tr><td>Adobe Creative Cloud</td><td class="muted">Só o launcher</td><td>Nenhum app (Illustrator/AE) encontrado.</td></tr>
+          <tr><td>Inkscape · Krita · Blender · Penpot · Glaxnimate · Kdenlive · Natron</td><td class="no">Não encontrados</td><td>Substituídos por SVG escrito à mão (logo) e CSS (motion).</td></tr>
+          <tr><td>FFmpeg 9.0.2 · Python 3.14 + Pillow · Node 24 · Chromium headless</td><td class="ok">Instalados</td><td>FFmpeg leu a gravação de tela enviada; Python calculou contraste WCAG da paleta; Chromium renderizou este arquivo para revisão.</td></tr>
+          <tr><td>MCP Figma</td><td class="no">Requer autenticação</td><td>Indisponível até ser autorizado via <code>/mcp</code>.</td></tr>
+          <tr><td>Navegador / pesquisa web</td><td class="ok">Disponível</td><td>Referências da seção 02 vêm de análise de mercado, sem coleta de imagens de terceiros (direitos).</td></tr>
+          <tr><td>Fontes</td><td class="ok">Google Fonts (OFL)</td><td>Bricolage Grotesque, Instrument Sans e Geist Mono — todas SIL Open Font License, uso comercial livre.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 01 ESTRATÉGIA ============ -->
+<section id="estrategia" class="dark">
+  <div class="wrap">
+    <div class="sec-head"><div class="sec-num">01</div><div><h2 class="disp">A virada</h2><p class="muted">Todo produto viral tem um instante em que deixa de ser desconhecido e passa a ser desejado. A ViraTrend vive nesse instante — e mostra só o que merece virar.</p></div></div>
+    <div class="grid g3">
+      <div class="panel"><p class="eyebrow" style="color:var(--lime)">Conceito</p><h3 style="margin-top:12px">O canto que salta</h3><p class="muted">O símbolo é um bloco com um canto que se solta e sobe. É o produto que sai do feed e chama a atenção — e também uma seta discreta para cima e para a direita: tendência. Esse corte, a <b style="color:var(--off)">Quina</b>, vira o DNA de cards, molduras, fotos e animações.</p></div>
+      <div class="panel"><p class="eyebrow" style="color:var(--lime)">Posicionamento</p><h3 style="margin-top:12px">Curadoria, não vitrine</h3><p class="muted">Não é loja nem marketplace. É o amigo que já viu tudo antes e filtra: o que está em alta, por que importa e onde comprar com preço conferido. A confiança é o produto; o link de afiliado é a consequência.</p></div>
+      <div class="panel"><p class="eyebrow" style="color:var(--lime)">Personalidade</p><h3 style="margin-top:12px">Curiosa, direta, honesta</h3><p class="muted">Jovem sem ser infantil, rápida sem gritar. Sem urgência falsa, sem "última chance" sem prova, sem desconto inventado. Preço sempre com data. Aviso de afiliado sempre visível.</p></div>
+    </div>
+    <div class="grid g2" style="margin-top:24px">
+      <div class="panel">
+        <p class="eyebrow" style="color:var(--lime)">Nome</p>
+        <h3 style="margin-top:12px">ViraTrend</h3>
+        <p class="muted"><b style="color:var(--off)">Vira</b> carrega três leituras em português: <i>virar</i> (transformar), <i>viral</i> e <i>virada</i>. <b style="color:var(--off)">Trend</b> é vocabulário nativo da internet brasileira. O híbrido soa como a forma como o público fala, cabe em handle (@viratrend), não prende a marca a uma categoria e funciona em voz alta em vídeo.</p>
+        <p class="cap">Pendente: busca de anterioridade no INPI (classes 35 e 42) e disponibilidade de domínio/handles — não verificados aqui.</p>
+      </div>
+      <div class="panel">
+        <p class="eyebrow" style="color:var(--lime)">Slogan escolhido</p>
+        <h3 style="margin-top:12px;font-size:28px">Produtos que viralizam. <span style="color:var(--lime)">Achados que valem a pena.</span></h3>
+        <p class="muted">Vence porque carrega a promessa de <b style="color:var(--off)">filtro</b>: "valem a pena" diz que alguém escolheu. "O que está em alta, você encontra aqui" descreve qualquer agregador e é passivo. Ele não some: vira a linha de apoio do campo de busca e a meta description do site.</p>
+        <p class="cap">Versão curta (avatar, selos, vídeo): "Achados que valem a pena."</p>
+      </div>
+    </div>
+    <div class="grid g4" style="margin-top:24px">
+      <div class="panel"><p class="eyebrow">Voz — assim</p><p style="margin-top:10px">"Viralizou no TikTok. A gente olhou: vale pelo preço, não pela promessa."</p></div>
+      <div class="panel"><p class="eyebrow">Voz — assim</p><p style="margin-top:10px">"R$ 89 hoje às 14h na Amazon. Ontem estava R$ 119."</p></div>
+      <div class="panel"><p class="eyebrow">Voz — nunca</p><p style="margin-top:10px;text-decoration:line-through;text-decoration-color:var(--brasa)">"CORREEE!!! 🔥🔥 ÚLTIMAS UNIDADES 😱"</p></div>
+      <div class="panel"><p class="eyebrow">Voz — nunca</p><p style="margin-top:10px;text-decoration:line-through;text-decoration-color:var(--brasa)">"O MELHOR produto do mundo, você PRECISA ter."</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 02 REFERÊNCIAS ============ -->
+<section id="referencias">
+  <div class="wrap">
+    <div class="sec-head"><div class="sec-num">02</div><div><h2 class="disp">Painel de referências</h2><p>O que aprender — e o que evitar — com quem já resolveu descoberta, curadoria e conteúdo jovem. Nenhuma imagem de terceiros foi reproduzida.</p></div></div>
+    <div class="grid g3">
+      <div class="ref-card"><h4>Curadoria editorial</h4><p class="muted">Wirecutter, The Strategist. Confiança vem de critério explícito: "por que escolhemos", data de atualização, aviso de afiliado no topo.</p><p class="take">→ Bloco "Por que vale" fixo em todo produto + preço com data/hora.</p></div>
+      <div class="ref-card"><h4>Descoberta por ranking</h4><p class="muted">Product Hunt. O ranking diário cria hábito de retorno; o número de votos é prova social sem precisar de adjetivo.</p><p class="take">→ "Sinal" de 1 a 5 barras: métrica própria de alta, sempre a mesma linguagem.</p></div>
+      <div class="ref-card"><h4>Marcas jovens de revenda</h4><p class="muted">Depop, StockX. Tipografia gigante e condensada, fundos sólidos, produto recortado. Reconhecíveis sem logo.</p><p class="take">→ Display condensado + blocos de cor chapada. Nada de gradiente.</p></div>
+      <div class="ref-card"><h4>Perfis de achadinhos (BR)</h4><p class="muted">Grade caótica, prints de app, emojis e caixa alta. Funciona no curto prazo e cansa — todos ficam iguais.</p><p class="take">→ Diferenciação pelo oposto: grid previsível, ritmo de cor, voz calma.</p></div>
+      <div class="ref-card"><h4>Varejo digital (ML, Amazon)</h4><p class="muted">Clareza de preço, parcelas e loja. Mas a estética de oferta (vermelho, %, contagem regressiva) é o território do "cassino".</p><p class="take">→ Herdar a clareza do preço; laranja Brasa só para queda real de preço.</p></div>
+      <div class="ref-card"><h4>O moodboard anterior</h4><p class="muted">A gravação enviada mostra referências com gradiente roxo→lime e telas de e-commerce genéricas. Ótimas cores, linguagem comum demais.</p><p class="take">→ Mesmas quatro cores, sempre chapadas. Personalidade vem da forma (Quina), não do efeito.</p></div>
+    </div>
+    <div class="panel" style="margin-top:32px;display:grid;grid-template-columns:repeat(4,1fr);gap:20px">
+      <div><p class="eyebrow">Achado 1</p><p style="margin-top:8px">Reconhecimento sem logo nasce de <b>uma forma repetida</b>, não de muitas.</p></div>
+      <div><p class="eyebrow">Achado 2</p><p style="margin-top:8px">Produto real em fundo sólido lê melhor no feed que montagem com efeito.</p></div>
+      <div><p class="eyebrow">Achado 3</p><p style="margin-top:8px">Site e social conversam quando compartilham <b>componentes</b>, não só cor.</p></div>
+      <div><p class="eyebrow">Achado 4</p><p style="margin-top:8px">Chamar atenção sem parecer anúncio = informação útil em destaque (preço, data, por quê).</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 03 PROPOSTAS ============ -->
+<section id="propostas" class="dark">
+  <div class="wrap">
+    <div class="sec-head"><div class="sec-num">03</div><div><h2 class="disp">Três caminhos</h2><p class="muted">Explorações antes da escolha. A definitiva combina o melhor de duas.</p></div></div>
+    <div class="grid g3">
+      <div class="prop">
+        <div class="lb" style="background:var(--lime)"><svg viewBox="0 0 440 92" style="width:88%;color:var(--midnight);--wd:var(--purple)"><use href="#w"/></svg></div>
+        <div class="body" style="color:var(--midnight)"><p class="eyebrow">Proposta 1 · Wordmark</p><h3 style="margin-top:8px">Traço único</h3><p class="muted">Letras desenhadas do zero sobre um módulo de traço: círculos perfeitos, cortes retos, o "v" afiado. O pingo do i é o canto que saltou. Peso ajustável no próprio SVG.</p><div class="score"><span class="badge b-line">+ legível</span><span class="badge b-line">+ proprietário</span><span class="badge b-line">− fraco em 16px</span></div></div>
+      </div>
+      <div class="prop" style="outline:3px solid var(--lime);outline-offset:4px">
+        <div class="lb" style="background:var(--midnight);border-bottom:1px solid #2B3157"><svg viewBox="0 0 546 92" style="width:90%;color:var(--off);--qb:var(--lime);--wd:var(--lime)"><use href="#lh"/></svg></div>
+        <div class="body" style="color:var(--midnight)"><p class="eyebrow">Proposta 2 · Símbolo + wordmark</p><h3 style="margin-top:8px">A Quina</h3><p class="muted">Bloco com o canto cortado; o pedaço salta para cima e à direita. Lê como "algo que se destaca", como seta de tendência e como etiqueta virada — sem ser sacola, carrinho ou foguinho.</p><div class="score"><span class="badge b-alta">Escolhida</span><span class="badge b-line">+ vira sistema</span><span class="badge b-line">+ avatar</span></div></div>
+      </div>
+      <div class="prop">
+        <div class="lb" style="background:var(--purple)"><svg viewBox="0 0 100 100" style="width:110px;color:var(--off)"><use href="#vt"/></svg></div>
+        <div class="body" style="color:var(--midnight)"><p class="eyebrow">Proposta 3 · Monograma</p><h3 style="margin-top:8px">VT fundido</h3><p class="muted">A barra do T vira o topo do V numa só peça. Forte em tamanho pequeno, mas lembra sigla corporativa e perde a história da "virada".</p><div class="score"><span class="badge b-line">+ compacto</span><span class="badge b-line">− genérico</span><span class="badge b-line">− sem conceito</span></div></div>
+      </div>
+    </div>
+    <p class="muted" style="margin-top:28px;max-width:820px">Decisão: a <b style="color:var(--off)">Proposta 2</b> como sistema, usando o wordmark da Proposta 1. O próprio símbolo Quina faz o papel de monograma (avatar, favicon), então o VT foi descartado: dois símbolos dividiriam o reconhecimento.</p>
+  </div>
+</section>
+
+<!-- ============ 04 LOGO ============ -->
+<section id="logo">
+  <div class="wrap">
+    <div class="sec-head"><div class="sec-num">04</div><div><h2 class="disp">Logotipo</h2><p>Assinatura principal horizontal, vertical, símbolo isolado e versões monocromáticas. Todos são o mesmo SVG com cores trocadas por variável.</p></div></div>
+    <div class="grid g2">
+      <div class="lb" style="background:var(--white);border:1px solid var(--linha)"><svg viewBox="0 0 546 92" style="width:84%;color:var(--midnight)"><use href="#lh"/></svg><p class="cap">Principal · fundo claro</p></div>
+      <div class="lb dark" style="border-radius:var(--r-l)"><svg viewBox="0 0 546 92" style="width:84%;color:var(--off);--qb:var(--lime);--wd:var(--lime)"><use href="#lh"/></svg><p class="cap">Principal · fundo escuro</p></div>
+      <div class="lb" style="background:var(--lime)"><svg viewBox="0 0 448 290" style="width:56%;color:var(--midnight)"><use href="#lv"/></svg><p class="cap">Vertical · lime</p></div>
+      <div class="lb" style="background:var(--purple)"><svg viewBox="0 0 448 290" style="width:56%;color:var(--off);--qs:var(--lime);--wd:var(--lime)"><use href="#lv"/></svg><p class="cap" style="color:var(--lilas)">Vertical · purple</p></div>
+    </div>
+    <div class="grid g4" style="margin-top:24px">
+      <div class="lb" style="background:var(--white);border:1px solid var(--linha)"><svg viewBox="0 0 108 108" style="width:110px;color:var(--midnight)"><use href="#q"/></svg><p class="cap">Símbolo</p></div>
+      <div class="lb" style="background:var(--midnight)"><svg viewBox="0 0 108 108" style="width:110px;--qb:var(--lime)"><use href="#q"/></svg><p class="cap" style="color:var(--nevoa)">Símbolo · escuro</p></div>
+      <div class="lb" style="background:var(--white);border:1px solid var(--linha)"><svg viewBox="0 0 546 92" style="width:90%;color:var(--midnight);--qs:var(--midnight);--wd:var(--midnight)"><use href="#lh"/></svg><p class="cap">Mono · preto</p></div>
+      <div class="lb" style="background:var(--midnight)"><svg viewBox="0 0 546 92" style="width:90%;color:var(--off);--qs:var(--off);--wd:var(--off)"><use href="#lh"/></svg><p class="cap" style="color:var(--nevoa)">Mono · branco</p></div>
+    </div>
+
+    <div class="grid g3" style="margin-top:48px">
+      <div class="panel">
+        <h3>Construção</h3>
+        <svg viewBox="-20 -28 148 148" style="width:100%;max-width:260px;margin:12px auto">
+          <defs><pattern id="gr" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M10 0H0V10" fill="none" stroke="#DEDCD3" stroke-width=".6"/></pattern></defs>
+          <rect x="-20" y="-28" width="148" height="148" fill="url(#gr)"/>
+          <use href="#q" x="0" y="-8" width="108" height="108" style="--qb:#10142622;--qs:#765BFF55"/>
+          <path d="M0 16C0 7.2 7.2 0 16 0H56L100 44V84C100 92.8 92.8 100 84 100H16C7.2 100 0 92.8 0 84Z M64 -8H108V36Z" fill="none" stroke="#101426" stroke-width=".8"/>
+          <path d="M56 0L64 -8M100 44L108 36" stroke="#765BFF" stroke-width="1.2" stroke-dasharray="2 2"/>
+          <text x="2" y="114" font-family="Geist Mono" font-size="6" fill="#6B6F84">100u · raio 16u · corte 44u · salto 8u</text>
+        </svg>
+        <p class="muted" style="font-size:14px">Bloco 100×100u, raio 16u. O corte remove um triângulo de 44u; o mesmo triângulo é deslocado 8u na diagonal. Nada é ajustado "no olho": a peça que sai é exatamente a que falta.</p>
+      </div>
+      <div class="panel">
+        <h3>Área de proteção e mínimos</h3>
+        <div style="display:grid;place-items:center;padding:24px;background:repeating-linear-gradient(45deg,var(--lilas) 0 6px,transparent 6px 12px);border-radius:var(--r-m);margin:12px 0">
+          <div style="background:var(--off);padding:22px;outline:1px dashed var(--purple)"><svg viewBox="0 0 546 92" style="width:200px;color:var(--midnight)"><use href="#lh"/></svg></div>
+        </div>
+        <p class="muted" style="font-size:14px">Proteção = altura do pingo do i salto (¼ da altura do símbolo) em todos os lados. Mínimo: assinatura horizontal 96px / 24mm; símbolo 16px / 5mm.</p>
+      </div>
+      <div class="panel">
+        <h3>Tamanhos pequenos</h3>
+        <div style="display:flex;align-items:flex-end;gap:16px;margin:16px 0">
+          <svg viewBox="0 0 200 200" style="width:16px;border-radius:3px"><use href="#av"/></svg>
+          <svg viewBox="0 0 200 200" style="width:32px;border-radius:6px"><use href="#av"/></svg>
+          <svg viewBox="0 0 200 200" style="width:48px;border-radius:10px"><use href="#av"/></svg>
+          <svg viewBox="0 0 200 200" style="width:96px;border-radius:50%"><use href="#av"/></svg>
+        </div>
+        <p class="muted" style="font-size:14px">Favicon 16/32, ícone de app 48, avatar circular 96+. Abaixo de 96px, sempre só o símbolo. O wordmark nunca aparece sozinho abaixo de 120px.</p>
+      </div>
+    </div>
+
+    <h3 class="disp" style="font-size:36px;margin:56px 0 20px">Não faça</h3>
+    <div class="grid g4">
+      <div class="lb dont" style="background:var(--white);border:1px solid var(--linha);min-height:160px"><svg viewBox="0 0 546 92" style="width:80%;color:var(--midnight);transform:scaleX(1.35)"><use href="#lh"/></svg><p class="cap">Distorcer</p></div>
+      <div class="lb dont" style="background:linear-gradient(120deg,var(--purple),var(--lime));min-height:160px"><svg viewBox="0 0 546 92" style="width:80%;color:var(--off)"><use href="#lh"/></svg><p class="cap" style="color:var(--midnight)">Gradiente / fundo sem contraste</p></div>
+      <div class="lb dont" style="background:var(--white);border:1px solid var(--linha);min-height:160px"><svg viewBox="0 0 546 92" style="width:80%;color:var(--brasa);--qs:var(--lime)"><use href="#lh"/></svg><p class="cap">Recolorir fora da paleta</p></div>
+      <div class="lb dont" style="background:var(--white);border:1px solid var(--linha);min-height:160px"><svg viewBox="0 0 546 92" style="width:80%;color:var(--midnight);transform:rotate(-12deg);filter:drop-shadow(4px 6px 4px rgb(0 0 0/.4))"><use href="#lh"/></svg><p class="cap">Girar / sombra</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 05 CORES ============ -->
+<section id="cores" class="dark">
+  <div class="wrap">
+    <div class="sec-head"><div class="sec-num">05</div><div><h2 class="disp">Cores</h2><p class="muted">As quatro cores do briefing foram mantidas — funcionam. O ajuste foi completar o sistema: um roxo de texto acessível, tons de apoio e uma única cor quente reservada para queda de preço.</p></div></div>
+    <p class="eyebrow" style="margin-bottom:14px">Principal</p>
+    <div class="grid g4" style="color:var(--midnight)">
+      <div class="swatch"><div class="c" style="background:#101426;color:#C8F36A">Midnight</div><dl><div><dt>HEX</dt><dd>#101426</dd></div><div><dt>RGB</dt><dd>16 20 38</dd></div><div><dt>HSL</dt><dd>229 41% 11%</dd></div></dl></div>
+      <div class="swatch"><div class="c" style="background:#C8F36A">Lime</div><dl><div><dt>HEX</dt><dd>#C8F36A</dd></div><div><dt>RGB</dt><dd>200 243 106</dd></div><div><dt>HSL</dt><dd>79 85% 68%</dd></div></dl></div>
+      <div class="swatch"><div class="c" style="background:#765BFF;color:#fff">Electric</div><dl><div><dt>HEX</dt><dd>#765BFF</dd></div><div><dt>RGB</dt><dd>118 91 255</dd></div><div><dt>HSL</dt><dd>250 100% 68%</dd></div></dl></div>
+      <div class="swatch"><div class="c" style="background:#F5F4F0">Off-white</div><dl><div><dt>HEX</dt><dd>#F5F4F0</dd></div><div><dt>RGB</dt><dd>245 244 240</dd></div><div><dt>HSL</dt><dd>48 20% 95%</dd></div></dl></div>
+    </div>
+    <p class="eyebrow" style="margin:32px 0 14px">Secundária e apoio</p>
+    <div class="grid" style="grid-template-columns:repeat(6,1fr);color:var(--midnight)">
+      <div class="swatch"><div class="c" style="background:#1D2240;color:#F5F4F0;height:90px;font-size:18px">Noite</div><dl><div><dt>HEX</dt><dd>#1D2240</dd></div><div><dt>RGB</dt><dd>29 34 64</dd></div><div><dt>HSL</dt><dd>231 38% 18%</dd></div></dl></div>
+      <div class="swatch"><div class="c" style="background:#5B3FE8;color:#fff;height:90px;font-size:18px">Electric Deep</div><dl><div><dt>HEX</dt><dd>#5B3FE8</dd></div><div><dt>RGB</dt><dd>91 63 232</dd></div><div><dt>HSL</dt><dd>250 79% 58%</dd></div></dl></div>
+      <div class="swatch"><div class="c" style="background:#E6E0FF;height:90px;font-size:18px">Lilás</div><dl><div><dt>HEX</dt><dd>#E6E0FF</dd></div><div><dt>RGB</dt><dd>230 224 255</dd></div><div><dt>HSL</dt><dd>252 100% 94%</dd></div></dl></div>
+      <div class="swatch"><div class="c" style="background:#EEFBCF;height:90px;font-size:18px">Lime Soft</div><dl><div><dt>HEX</dt><dd>#EEFBCF</dd></div><div><dt>RGB</dt><dd>238 251 207</dd></div><div><dt>HSL</dt><dd>78 84% 90%</dd></div></dl></div>
+      <div class="swatch"><div class="c" style="background:#FF5A36;height:90px;font-size:18px">Brasa</div><dl><div><dt>HEX</dt><dd>#FF5A36</dd></div><div><dt>RGB</dt><dd>255 90 54</dd></div><div><dt>HSL</dt><dd>11 100% 61%</dd></div></dl></div>
+      <div class="swatch"><div class="c" style="background:#6B6F84;color:#fff;height:90px;font-size:18px">Névoa</div><dl><div><dt>HEX</dt><dd>#6B6F84</dd></div><div><dt>RGB</dt><dd>107 111 132</dd></div><div><dt>HSL</dt><dd>230 10% 47%</dd></div></dl></div>
+    </div>
+    <div class="grid g2" style="margin-top:32px">
+      <div class="panel">
+        <h3>Proporção de uso</h3>
+        <div class="ratio" style="margin:14px 0"><div style="flex:45;background:var(--off);color:var(--midnight)">Off 45</div><div style="flex:30;background:#101426;color:var(--nevoa);outline:1px solid #2B3157">Midnight 30</div><div style="flex:15;background:var(--lime);color:var(--midnight)">Lime 15</div><div style="flex:8;background:var(--purple)">8</div><div style="flex:2;background:var(--brasa)"></div></div>
+        <p class="muted" style="font-size:14px">Lime é acento, não fundo de tudo. Electric marca a marca (salto, seleção, links). Brasa aparece só com queda de preço comprovada — nunca como "urgência".</p>
+      </div>
+      <div class="panel">
+        <h3>Contraste (WCAG 2.2)</h3>
+        <div style="display:grid;gap:6px;margin-top:12px">
+          <div class="pair" style="background:#101426;color:#C8F36A;outline:1px solid #2B3157">Lime em Midnight <span>14,3 · AAA</span></div>
+          <div class="pair" style="background:#F5F4F0;color:#101426">Midnight em Off-white <span>16,6 · AAA</span></div>
+          <div class="pair" style="background:#F5F4F0;color:#5B3FE8">Electric Deep em Off-white <span>5,8 · AA texto</span></div>
+          <div class="pair" style="background:#765BFF;color:#fff">Branco em Electric <span>4,1 · AA ≥ 18px bold</span></div>
+          <div class="pair" style="background:#101426;color:#765BFF;outline:1px solid #2B3157">Electric em Midnight <span>4,1 · só display/ícone</span></div>
+          <div class="pair" style="background:#765BFF;color:#C8F36A">Lime em Electric <span>3,5 · só ≥ 24px</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 06 TIPOGRAFIA ============ -->
+<section id="tipo">
+  <div class="wrap">
+    <div class="sec-head"><div class="sec-num">06</div><div><h2 class="disp">Tipografia</h2><p>Três famílias gratuitas (SIL OFL), cada uma com um trabalho. A display é variável em largura: condensada nas chamadas, mais aberta nos títulos de interface.</p></div></div>
+    <div class="grid g3">
+      <div class="panel"><p class="eyebrow">Títulos</p><p class="disp" style="font-size:96px;margin:14px 0">Aa</p><h3>Bricolage Grotesque</h3><p class="muted" style="font-size:14px">Peso 760–780, largura 82–86%, tracking −1,2%. Tem personalidade nas curvas sem cair no clichê de Space Grotesk ou Inter Display. Eixo óptico ajusta sozinho em tamanhos grandes.</p></div>
+      <div class="panel"><p class="eyebrow">Textos e interface</p><p style="font:600 96px/1 var(--f-text);margin:14px 0">Aa</p><h3>Instrument Sans</h3><p class="muted" style="font-size:14px">Regular 400 a Bold 700. Neutra, muito legível em telas pequenas, com largura variável para botões e chips apertados.</p></div>
+      <div class="panel"><p class="eyebrow">Preços e números</p><p class="price" style="font-size:96px;margin:14px 0">R$9</p><h3>Geist Mono</h3><p class="muted" style="font-size:14px">Medium a Bold, algarismos tabulares. Preços alinham em listas, e o mono dá o tom de "etiqueta conferida" — dado, não promessa.</p></div>
+    </div>
+    <div class="panel typescale" style="margin-top:24px">
+      <div><code>Display XL · 96/0.9</code><span class="disp" style="font-size:96px">Viralizou.</span></div>
+      <div><code>Display L · 64/0.92</code><span class="disp" style="font-size:64px">Achados da semana</span></div>
+      <div><code>H2 · 40/1 · wdth 85</code><span style="font:800 40px/1 var(--f-display);font-stretch:85%;letter-spacing:-.02em">Em alta em Casa</span></div>
+      <div><code>H3 · 22/1.2 · 700</code><span style="font:700 22px/1.2 var(--f-display);font-stretch:90%">Mini projetor portátil 4K</span></div>
+      <div><code>Body · 16/1.55</code><span>Viralizou pelo tamanho e pelo preço. Testes de usuários apontam brilho bom para quartos escuros, fraco de dia.</span></div>
+      <div><code>Small · 13/1.4</code><span style="font-size:13px" class="muted">Preço visto em 05/11/2026 às 14h. Podemos receber comissão pelas compras.</span></div>
+      <div><code>Label · Mono 11 · +12%</code><span class="eyebrow">Em alta · Tech · Amazon</span></div>
+      <div><code>Preço · Mono 700</code><span class="price" style="font-size:48px"><small>R$</small>129<sup>,90</sup></span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 07 ELEMENTOS ============ -->
+<section id="elementos" class="dark">
+  <div class="wrap">
+    <div class="sec-head"><div class="sec-num">07</div><div><h2 class="disp">Elementos proprietários</h2><p class="muted">Seis peças que tornam a marca reconhecível sem o nome. Todas derivam da Quina ou do preço.</p></div></div>
+    <div class="grid g3">
+      <div class="panel">
+        <div style="height:180px;display:grid;place-items:center"><div class="q" style="--q:34px;--g:9px;width:180px;height:140px"><div class="cut" style="width:100%;height:100%;background:var(--lime);border-radius:var(--r-m) 0 var(--r-m) var(--r-m)"></div><i class="spk"></i></div></div>
+        <h3>1 · Quina</h3><p class="muted" style="font-size:14px">Canto cortado + salto. Aplicar em cards, fotos e molduras. Tamanho do corte = 12–20% do lado menor; salto = ⅓ do corte.</p>
+      </div>
+      <div class="panel">
+        <div style="height:180px;display:grid;align-content:center;gap:10px;overflow:hidden;margin:0 -28px"><div class="fita" style="transform:rotate(-4deg)"><span><b>Em alta <i class="tri"></i></b><b>Casa <i class="tri"></i></b><b>Tech <i class="tri"></i></b><b>Beleza <i class="tri"></i></b><b>Em alta <i class="tri"></i></b><b>Casa <i class="tri"></i></b><b>Tech <i class="tri"></i></b><b>Beleza <i class="tri"></i></b><b>Em alta <i class="tri"></i></b><b>Casa <i class="tri"></i></b><b>Tech <i class="tri"></i></b><b>Beleza <i class="tri"></i></b></span></div><div class="fita" style="background:var(--purple);color:var(--white);transform:rotate(2deg)"><span style="animation-direction:reverse"><b>Achadinho #027</b><b>Achadinho #028</b><b>Achadinho #029</b><b>Achadinho #030</b><b>Achadinho #027</b><b>Achadinho #028</b><b>Achadinho #029</b><b>Achadinho #030</b></span></div></div>
+        <h3>2 · Fita</h3><p class="muted" style="font-size:14px">Faixa em movimento com Geist Mono caixa alta e o triângulo-salto como separador. Topo de posts, transições de vídeo, header de campanhas.</p>
+      </div>
+      <div class="panel">
+        <div style="height:180px;display:grid;place-items:center">
+          <svg class="stamp" viewBox="0 0 200 200"><defs><path id="circ" d="M100 100m-74 0a74 74 0 1 1 148 0a74 74 0 1 1-148 0"/></defs><circle cx="100" cy="100" r="96" fill="#765BFF"/><text font-family="Geist Mono" font-weight="700" font-size="13.2" letter-spacing="3.1" fill="#F5F4F0"><textPath href="#circ" textLength="462">ACHADOS QUE VALEM A PENA • VIRATREND • </textPath></text><use href="#q" x="70" y="70" width="60" height="60" style="--qb:#C8F36A;--qs:#101426"/></svg>
+        </div>
+        <h3>3 · Selo</h3><p class="muted" style="font-size:14px">Selo giratório de assinatura. Uso: canto de capas, embalagem de vídeo, rodapé do site. Nunca afirma algo que não fizemos ("testado", "garantido").</p>
+      </div>
+      <div class="panel">
+        <div style="height:180px;display:grid;place-items:center;gap:12px;align-content:center">
+          <div style="display:flex;gap:16px;align-items:center"><span class="sinal" data-n="3" style="color:var(--lime)"><i></i><i></i><i></i><i></i><i></i></span><span class="sinal" data-n="4" style="color:var(--lime)"><i></i><i></i><i></i><i></i><i></i></span><span class="sinal" data-n="5" style="color:var(--lime);height:30px"><i style="width:8px"></i><i style="width:8px"></i><i style="width:8px"></i><i style="width:8px"></i><i style="width:8px"></i></span></div>
+          <span class="badge b-dark" style="outline:1px solid #2B3157"><span class="sinal" data-n="4"><i></i><i></i><i></i><i></i><i></i></span> Sinal 4 · subindo</span>
+        </div>
+        <h3>4 · Sinal</h3><p class="muted" style="font-size:14px">Métrica própria de alta (1 a 5). Deve ser calculada com dado real (buscas, vídeos, vendas) quando o backend existir — até lá, só em conteúdo editorial.</p>
+      </div>
+      <div class="panel">
+        <div style="height:180px;display:grid;place-items:center">
+          <div class="q" style="--q:18px;--g:6px"><div class="cut" style="background:var(--off);color:var(--midnight);padding:14px 20px 12px;border-radius:var(--r-m) 0 var(--r-m) var(--r-m)"><span class="was" style="font-size:14px">R$ 199</span><div class="price" style="font-size:40px"><small>R$</small>129<sup>,90</sup></div><p class="mono" style="font-size:10px;color:var(--nevoa-d);margin-top:6px">AMAZON · VISTO 05/11 14H</p></div><i class="spk" style="background:var(--lime)"></i></div>
+        </div>
+        <h3>5 · Etiqueta de preço</h3><p class="muted" style="font-size:14px">Preço sempre com loja e data/hora. Preço antigo riscado em Brasa só se for histórico real.</p>
+      </div>
+      <div class="panel">
+        <div style="height:180px;border-radius:var(--r-m);background:var(--pattern),var(--noite);background-size:28px;display:grid;place-items:center;position:relative;overflow:hidden">
+          <span class="disp" style="font-size:38px;background:var(--midnight);padding:4px 12px">padrão <span class="mark" style="color:var(--midnight)">salto</span></span>
+        </div>
+        <h3 style="margin-top:0">6 · Padrão, grão e marca-texto</h3><p class="muted" style="font-size:14px">Padrão de saltos (opacidade 15–25%) para fundos; grão sutil (≤7%) só em superfícies escuras; marca-texto lime para destacar uma palavra por título.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 08 FOTOGRAFIA ============ -->
+<section id="foto">
+  <div class="wrap">
+    <div class="sec-head"><div class="sec-num">08</div><div><h2 class="disp">Direção fotográfica</h2><p>Foto real primeiro. A identidade emoldura o produto; não o substitui. Imagens de lojas parceiras só dentro das regras de cada programa de afiliados.</p></div></div>
+    <div class="grid g4">
+      <div><div class="photo-ex" style="background:var(--lime-soft)"><svg viewBox="0 0 200 200"><use href="#p-fone"/></svg></div><p class="cap">Still · produto recortado, fundo sólido da paleta, sombra de contato curta</p></div>
+      <div><div class="photo-ex" style="background:#D9D4C7"><div style="position:absolute;inset:0;background:linear-gradient(transparent 60%,rgb(16 20 38/.25))"></div><svg viewBox="0 0 200 200"><use href="#p-lumi"/></svg></div><p class="cap">Em uso · luz natural, cenário real de casa, mão/pessoa em cena</p></div>
+      <div><div class="photo-ex" style="background:var(--lilas)"><svg viewBox="0 0 200 200" style="width:90%;transform:rotate(-14deg) translateY(10%)"><use href="#p-watch"/></svg></div><p class="cap">Detalhe · macro, corte agressivo, o produto sai do quadro</p></div>
+      <div><div class="photo-ex" style="background:var(--purple)"><div class="q" style="position:absolute;inset:14% 14% 20%;--q:32px;--g:8px"><div class="cut" style="position:absolute;inset:0;background:var(--off);display:grid;place-items:center"><svg viewBox="0 0 200 200" style="width:70%"><use href="#p-serum"/></svg></div><i class="spk" style="background:var(--lime)"></i></div></div><p class="cap">Composição · foto real dentro da Quina, sobre cor chapada</p></div>
+    </div>
+    <div class="grid g2" style="margin-top:24px">
+      <div class="do"><b>FAÇA</b>Fotografar com luz suave lateral · manter cor real do produto · enquadrar com respiro de 12% · usar o mesmo fundo para a mesma série · mostrar escala (mão, mesa) · creditar fotos de terceiros.</div>
+      <div class="dn"><b>EVITE</b>Mockups 3D genéricos · produto flutuando com brilho e partículas · cenários gerados por IA apresentados como reais · filtros saturados · prints de anúncio · usar foto da loja fora das regras do programa.</div>
+    </div>
+    <p class="cap" style="margin-top:16px">As ilustrações vetoriais deste arquivo são placeholders: substitua por fotos reais nos templates (duplo clique na imagem).</p>
+  </div>
+</section>
+
+<!-- ============ 09 SOCIAL ============ -->
+<section id="social" class="dark">
+  <div class="wrap">
+    <div class="sec-head"><div class="sec-num">09</div><div><h2 class="disp">Instagram & TikTok</h2><p class="muted">Avatar, bio, destaques e grade. A grade alterna fundos escuro / claro / cor em diagonal — consistente sem ficar repetitiva.</p></div></div>
+    <div style="display:flex;gap:40px;flex-wrap:wrap;justify-content:center;align-items:flex-start">
+      <div>
+        <div class="phone"><div class="screen">
+          <div class="ig-head">
+            <p style="font:700 15px var(--f-text);text-align:center;margin-bottom:14px">viratrend</p>
+            <div class="ig-top"><svg class="ig-av" viewBox="0 0 200 200" style="outline:2px solid var(--linha);outline-offset:3px"><use href="#av"/></svg><div class="ig-stats"><div><b>248</b>posts</div><div><b>182 mil</b>seguidores</div><div><b>12</b>seguindo</div></div></div>
+            <div class="ig-bio"><b>ViraTrend</b><br>Produtos que viralizam. Achados que valem a pena.<br>Preço conferido + loja de origem em todo post.<br><span style="color:#2D4F9F">viratrend.com.br</span></div>
+            <div class="hl" style="gap:12px;margin-top:14px;flex-wrap:nowrap">
+              <figure><div class="c" style="width:58px;height:58px"><div style="background:var(--midnight);color:var(--lime);font-size:12px">Alta</div></div>Em alta</figure>
+              <figure><div class="c" style="width:58px;height:58px"><div style="background:var(--lime);font-size:12px">Casa</div></div>Casa</figure>
+              <figure><div class="c" style="width:58px;height:58px"><div style="background:var(--purple);color:#fff;font-size:12px">Tech</div></div>Tech</figure>
+              <figure><div class="c" style="width:58px;height:58px"><div style="background:var(--lilas);font-size:12px">Glow</div></div>Beleza</figure>
+            </div>
+          </div>
+          <div class="ig-grid">
+            <div data-clone="tpl1"></div><div data-clone="tpl2"></div><div data-clone="tpl4"></div>
+            <div data-clone="tpl5"></div><div data-clone="tpl3"></div><div data-clone="tpl1" data-v="b"></div>
+            <div data-clone="tpl4" data-v="b"></div><div data-clone="tpl1" data-v="c"></div><div data-clone="tpl2" data-v="b"></div>
+          </div>
+        </div></div>
+        <p class="cap" style="text-align:center">Instagram · perfil</p>
+      </div>
+      <div>
+        <div class="phone"><div class="screen" style="background:var(--white)">
+          <div style="padding:44px 16px 14px;text-align:center">
+            <svg viewBox="0 0 200 200" style="width:88px;border-radius:50%;margin:0 auto"><use href="#av"/></svg>
+            <p style="font:700 16px var(--f-text);margin-top:10px">@viratrend</p>
+            <div style="display:flex;justify-content:center;gap:22px;margin:10px 0;font:400 12px var(--f-text)"><div><b style="display:block;font-size:16px">12</b>Seguindo</div><div><b style="display:block;font-size:16px">410 mil</b>Seguidores</div><div><b style="display:block;font-size:16px">6,2 mi</b>Curtidas</div></div>
+            <p style="font:400 13px/1.4 var(--f-text)">Achados que valem a pena. Preço conferido.<br><span class="tri" style="color:var(--purple)"></span> link na bio</p>
+          </div>
+          <div class="tt-grid">
+            <div data-clone="tplR"></div><div data-clone="tplS"></div><div data-clone="tplR" data-v="b"></div>
+            <div data-clone="tplS" data-v="b"></div><div data-clone="tplR" data-v="c"></div><div data-clone="tplS" data-v="c"></div>
+          </div>
+        </div></div>
+        <p class="cap" style="text-align:center">TikTok · perfil</p>
+      </div>
+    </div>
+    <div class="grid g2" style="margin-top:48px">
+      <div class="panel">
+        <h3>Destaques</h3>
+        <div class="hl" style="margin-top:14px">
+          <figure><div class="c"><div style="background:var(--midnight);color:var(--lime)">Alta</div></div>Em alta</figure>
+          <figure><div class="c"><div style="background:var(--lime);color:var(--midnight)">Casa</div></div>Casa</figure>
+          <figure><div class="c"><div style="background:var(--purple);color:#fff">Tech</div></div>Tech</figure>
+          <figure><div class="c"><div style="background:var(--lilas);color:var(--midnight)">Glow</div></div>Beleza</figure>
+          <figure><div class="c"><div style="background:var(--off);color:var(--midnight)"><span class="price" style="font-size:20px">R$</span></div></div>Ofertas</figure>
+          <figure><div class="c"><div style="background:var(--midnight)"><svg viewBox="0 0 108 108" style="width:30px;--qb:var(--off)"><use href="#q"/></svg></div></div>Sobre</figure>
+        </div>
+      </div>
+      <div class="panel">
+        <h3>Capa de perfil (YouTube/X/Facebook) · 1500×500</h3>
+        <div style="aspect-ratio:3/1;margin-top:14px;border-radius:var(--r-m);overflow:hidden;background:var(--lime);position:relative;display:flex;align-items:center;padding:0 6%">
+          <div style="position:absolute;inset:0;background:var(--pattern);background-size:26px;opacity:.5;filter:invert(1) hue-rotate(180deg) brightness(.3)"></div>
+          <p class="disp" style="font-size:clamp(18px,2.6vw,32px);position:relative;color:var(--midnight);max-width:68%">Produtos que viralizam.<br>Achados que <span style="background:var(--midnight);color:var(--lime);padding:0 .15em">valem a pena.</span></p>
+          <svg viewBox="0 0 108 108" style="position:absolute;right:5%;width:15%;--qb:var(--midnight)"><use href="#q"/></svg>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 10 TEMPLATES ============ -->
+<section id="templates">
+  <div class="wrap">
+    <div class="sec-head"><div class="sec-num">10</div><div><h2 class="disp">Templates de conteúdo</h2><p>Cinco formatos fixos para produzir em escala. <b>Clique em qualquer texto para editar · duplo clique na imagem para trocar a foto.</b> Tudo escala pelo container: o mesmo template serve 1080×1350, grade ou miniatura.</p></div></div>
+    <div class="grid g3" style="align-items:start">
+      <div>
+        <div class="post t1" id="tpl1">
+          <div class="tick"><span><b>Viral do momento <i class="tri"></i></b> &nbsp; <b>Viral do momento <i class="tri"></i></b> &nbsp; <b>Viral do momento <i class="tri"></i></b> &nbsp; <b>Viral do momento <i class="tri"></i></b> &nbsp; <b>Viral do momento <i class="tri"></i></b> &nbsp; <b>Viral do momento <i class="tri"></i></b> &nbsp;</span></div>
+          <div class="stage slot" data-field="imagem"><svg viewBox="0 0 200 200"><use href="#p-fone"/></svg></div>
+          <div class="spark"></div>
+          <div class="count"><span class="sinal" data-n="5"><i></i><i></i><i></i><i></i><i></i></span><span contenteditable data-field="info">2,4 MI VÍDEOS</span></div>
+          <h3 class="t-disp" contenteditable data-field="nome">Fone que cabe no bolso da calça</h3>
+          <div class="foot"><div><span class="store" contenteditable data-field="loja">Amazon</span><p class="fine" style="margin-top:1.4cqw" contenteditable data-field="data">Preço visto 05/11 · 14h</p></div><span class="price" contenteditable data-field="preco"><small>R$</small>89<sup>,90</sup></span></div>
+        </div>
+        <p class="cap">T1 · Viral do momento · feed 4:5</p>
+      </div>
+      <div>
+        <div class="post t2" id="tpl2">
+          <div class="num">ACHADINHO<b contenteditable data-field="numero">#027</b></div>
+          <div class="frame slot" data-field="imagem"><svg viewBox="0 0 200 200"><use href="#p-lumi"/></svg></div>
+          <div class="spark"></div>
+          <ul contenteditable data-field="info"><li>Sem fio, recarrega por USB-C</li><li>3 temperaturas de luz</li><li>Cabe na mesa de cabeceira</li></ul>
+          <h3 class="t-disp" contenteditable data-field="nome">Luminária que <span style="background:var(--lime);padding:0 .1em">virou decoração</span></h3>
+          <div class="foot"><span class="store" contenteditable data-field="loja">Mercado Livre</span><span class="price" contenteditable data-field="preco"><small>R$</small>64<sup>,00</sup></span></div>
+        </div>
+        <p class="cap">T2 · Achadinho · feed 4:5</p>
+      </div>
+      <div>
+        <div class="post t3" id="tpl3">
+          <div class="half a"><span class="lbl t-tag">A</span><div class="slot" data-field="imagem-a"><svg viewBox="0 0 200 200"><use href="#p-watch"/></svg></div><h4 class="t-disp" contenteditable data-field="nome-a">Smartband X2</h4><dl><div><dt>Bateria</dt><dd contenteditable>14 dias</dd></div><div><dt>Tela</dt><dd contenteditable>1,47"</dd></div><div><dt>Preço</dt><dd contenteditable>R$ 159</dd></div></dl></div>
+          <div class="half b"><span class="lbl t-tag" style="color:var(--lime)">B</span><div class="slot" data-field="imagem-b"><svg viewBox="0 0 200 200" style="transform:scaleX(-1)"><use href="#p-watch"/></svg></div><h4 class="t-disp" contenteditable data-field="nome-b">Watch Lite</h4><dl><div><dt>Bateria</dt><dd contenteditable>7 dias</dd></div><div><dt>Tela</dt><dd contenteditable>1,83"</dd></div><div><dt>Preço</dt><dd contenteditable>R$ 229</dd></div></dl></div>
+          <div class="vs">VS</div>
+          <div class="verdict"><b>VEREDITO</b><span contenteditable data-field="cta">Bateria importa mais? Vai de A. Tela maior? B.</span></div>
+        </div>
+        <p class="cap">T3 · Comparação · feed 4:5</p>
+      </div>
+      <div>
+        <div class="post t4" id="tpl4">
+          <h3 class="t-disp" contenteditable data-field="nome">5 achados de casa <em>abaixo de R$ 100</em></h3>
+          <ol contenteditable data-field="lista">
+            <li><b>01</b><span>Organizador giratório</span><span class="price">R$ 49</span></li>
+            <li><b>02</b><span>Luminária touch</span><span class="price">R$ 64</span></li>
+            <li><b>03</b><span>Mop spray</span><span class="price">R$ 79</span></li>
+            <li><b>04</b><span>Copo térmico 900ml</span><span class="price">R$ 89</span></li>
+            <li><b>05</b><span>Mini aspirador</span><span class="price">R$ 99</span></li>
+          </ol>
+          <div class="foot"><span class="handle">@VIRATREND</span><span class="fine" contenteditable data-field="data">Preços vistos 05/11</span></div>
+        </div>
+        <p class="cap">T4 · Lista · feed 4:5</p>
+      </div>
+      <div>
+        <div class="post t5" id="tpl5">
+          <span class="drop badge b-dark t-tag" style="padding:1.6cqw 2.4cqw;border-radius:1.4cqw">Caiu o preço <i class="tri"></i></span>
+          <div class="slot" data-field="imagem"><svg viewBox="0 0 200 200"><use href="#p-copo"/></svg></div>
+          <div class="pct" contenteditable data-field="desconto">−35<sup>%</sup></div>
+          <h3 contenteditable data-field="nome">Copo térmico 900ml com tampa e canudo</h3>
+          <div class="box"><div><span class="was" contenteditable data-field="preco-antigo">R$ 139,90</span><div class="price" contenteditable data-field="preco"><small>R$</small>89<sup>,90</sup></div></div><div style="text-align:right"><span class="store" style="color:var(--lime)" contenteditable data-field="loja">Amazon</span><p class="fine" style="margin-top:1.4cqw" contenteditable data-field="data">05/11 · 14h · pode mudar</p></div><div class="spark"></div></div>
+        </div>
+        <p class="cap">T5 · Oferta e promoção · feed 4:5</p>
+      </div>
+      <div>
+        <div class="panel" style="height:100%">
+          <h3>Regras do sistema</h3>
+          <ul class="clean" style="font-size:14px">
+            <li><b>Cada formato tem uma cor-base fixa</b> — T1 Midnight · T2 Off · T3 Split · T4 Electric · T5 Lime. A grade se organiza sozinha.</li>
+            <li><b>Campos editáveis</b>: imagem, nome, preço, info, loja, data, CTA.</li>
+            <li><b>Sempre presentes</b>: loja e data/hora do preço.</li>
+            <li><b>Um destaque por peça</b>: marca-texto <i>ou</i> número grande, nunca os dois.</li>
+            <li><b>Margem segura</b>: 6% nas bordas; textos fora dos 15% inferiores no Reels.</li>
+            <li>Aviso "podemos receber comissão" na legenda de todo post com link.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <h3 class="disp" style="font-size:40px;margin:64px 0 24px">Stories, Reels e carrossel</h3>
+    <div class="grid" style="grid-template-columns:1fr 1fr 2.2fr;align-items:start">
+      <div>
+        <div class="story st1" id="tplS">
+          <div class="top"><svg viewBox="0 0 108 108" style="width:9cqw;--qb:var(--lime)"><use href="#q"/></svg><span class="t-tag" style="color:var(--lime)">Achado do dia</span></div>
+          <h3 class="t-disp" contenteditable data-field="nome">Viralizou e a gente achou mais barato</h3>
+          <span class="price" contenteditable data-field="preco"><small>R$</small>64<sup>,00</sup></span>
+          <div class="slot" data-field="imagem"><svg viewBox="0 0 200 200"><use href="#p-serum"/></svg></div>
+          <span class="link" contenteditable data-field="cta">↗ Ver no Mercado Livre</span>
+        </div>
+        <p class="cap">Story · 9:16 · link sticker</p>
+      </div>
+      <div>
+        <div class="story rl" id="tplR">
+          <div class="safe"></div>
+          <div style="position:absolute;left:7cqw;top:12cqw"><span class="t-tag" style="background:var(--lime);color:var(--midnight);padding:1.6cqw 2.4cqw;border-radius:1.4cqw">Em alta · Tech</span></div>
+          <h3 class="t-disp" contenteditable data-field="nome">Esse fone viralizou. <em>Vale?</em></h3>
+          <div class="slot" data-field="imagem"><svg viewBox="0 0 200 200"><use href="#p-fone"/></svg></div>
+          <span class="q1 t-tag" contenteditable data-field="info">Ep. 14</span>
+          <p class="fine" style="font:500 2.8cqw var(--f-mono);opacity:.7">@VIRATREND</p>
+        </div>
+        <p class="cap">Capa de Reels/TikTok · área tracejada = recorte 1:1 da grade</p>
+      </div>
+      <div>
+        <div class="carr">
+          <div class="post cs"><span class="n">1/3</span><h3 class="t-disp" contenteditable>O fone que todo mundo está usando</h3><div class="line"></div><div class="dot" style="right:-2cqw"></div><p contenteditable>Arraste. A gente explica por que viralizou →</p></div>
+          <div class="post cs" style="background:var(--white)"><span class="n">2/3</span><div class="slot"><svg viewBox="0 0 200 200"><use href="#p-fone"/></svg></div><div class="line"></div><div class="dot" style="right:-2cqw"></div><p contenteditable>Case do tamanho de um isqueiro, 30h de bateria somando o estojo.</p></div>
+          <div class="post cs" style="background:var(--midnight);color:var(--off)"><span class="n">3/3</span><h3 class="t-disp" style="color:var(--lime)" contenteditable>R$ 89,90 na Amazon</h3><div class="line" style="right:auto;width:30%"></div><p contenteditable>Preço visto 05/11 às 14h. Link nos stories.</p></div>
+        </div>
+        <p class="cap">Carrossel · a linha Electric atravessa os slides e o salto aponta para o próximo</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 11 DESIGN SYSTEM ============ -->
+<section id="ds" class="dark">
+  <div class="wrap">
+    <div class="sec-head"><div class="sec-num">11</div><div><h2 class="disp">Design system</h2><p class="muted">Tokens e componentes para o site em Next.js + Tailwind. Os mesmos valores deste arquivo, prontos para colar.</p></div></div>
+    <div class="grid g2">
+      <div class="panel">
+        <h3>Botões</h3>
+        <div style="display:flex;flex-wrap:wrap;gap:14px;margin-top:16px;align-items:center">
+          <button class="btn btn-primary">Ver achados</button>
+          <button class="btn btn-secondary">Em alta agora</button>
+          <button class="btn btn-ghost">Categorias</button>
+          <button class="btn btn-store">Ver na Amazon ↗</button>
+          <button class="btn btn-primary btn-sm">Pequeno</button>
+        </div>
+        <p class="cap">Primário = lime + sombra dura (sobe 2px no hover, afunda no clique) · Loja = midnight, sempre com o nome da loja e ↗</p>
+      </div>
+      <div class="panel">
+        <h3>Busca</h3>
+        <label class="search" style="margin-top:16px"><svg viewBox="0 0 24 24" width="20" fill="none" stroke="#101426" stroke-width="2.4"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/></svg><input placeholder="O que está em alta, você encontra aqui" aria-label="Buscar produtos"><span class="btn btn-secondary btn-sm">Buscar</span></label>
+        <p class="cap">O slogan alternativo vira placeholder · borda 2px + sombra dura = assinatura do componente</p>
+      </div>
+      <div class="panel">
+        <h3>Badges e chips</h3>
+        <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:16px;align-items:center">
+          <span class="badge b-alta">Em alta <i class="tri"></i></span><span class="badge b-achado">Achadinho</span><span class="badge b-drop">−35%</span><span class="badge b-dark" style="outline:1px solid #2B3157"><span class="sinal" data-n="5"><i></i><i></i><i></i><i></i><i></i></span> Sinal 5</span>
+          <span class="chip" style="color:var(--off)">Amazon</span><span class="chip" style="color:var(--off)">Mercado Livre</span><span class="chip" style="color:var(--nevoa)">TikTok Shop · em breve</span>
+        </div>
+        <p class="cap">Loja: chip de contorno com nome por extenso — sem usar logos de terceiros</p>
+      </div>
+      <div class="panel">
+        <h3>Navegação</h3>
+        <div style="margin-top:16px;border-radius:var(--r-m);overflow:hidden;color:var(--midnight)">
+          <div class="s-header" style="padding:12px 18px;gap:18px"><svg viewBox="0 0 546 92" style="height:20px;width:auto"><use href="#lh"/></svg><nav style="font-size:13px;gap:16px"><a class="on">Em alta</a><a>Categorias</a><a>Ofertas</a><a>Sobre</a></nav></div>
+          <div class="m-tabs" style="position:static;height:64px;padding-bottom:8px">
+            <a class="on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11L12 4l9 7v9H3z"/></svg>Início</a>
+            <a><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19L10 12l4 4 6-8M15 8h5v5"/></svg>Em alta</a>
+            <a><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/></svg>Busca</a>
+            <a><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12V3h9l9 9-9 9z"/><circle cx="8" cy="8" r="1.5"/></svg>Ofertas</a>
+            <a><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>Categorias</a>
+          </div>
+        </div>
+        <p class="cap">Item ativo: sublinhado lime (desktop) · salto lime sobre o ícone (mobile)</p>
+      </div>
+    </div>
+    <div class="grid g4" style="margin-top:24px;color:var(--midnight)">
+      <article class="pcard"><div class="img"><svg viewBox="0 0 200 200"><use href="#p-fone"/></svg></div><i class="spk"></i><div class="meta"><span class="badge b-alta">Em alta</span><span class="chip" style="color:var(--nevoa-d);height:22px">Amazon</span></div><h4>Fone bluetooth com estojo compacto</h4><div class="row"><div><span class="price"><small>R$</small>89<sup>,90</sup></span><p class="seen">visto há 2h</p></div><a class="btn btn-store btn-sm" href="#ds">Ver ↗</a></div></article>
+      <article class="pcard"><div class="img" style="background:var(--lilas)"><svg viewBox="0 0 200 200"><use href="#p-serum"/></svg></div><i class="spk" style="background:var(--midnight)"></i><div class="meta"><span class="badge b-achado">Achadinho</span><span class="chip" style="color:var(--nevoa-d);height:22px">M. Livre</span></div><h4>Sérum de niacinamida 30ml</h4><div class="row"><div><span class="price"><small>R$</small>42<sup>,50</sup></span><p class="seen">visto há 40min</p></div><a class="btn btn-store btn-sm" href="#ds">Ver ↗</a></div></article>
+      <article class="pcard"><div class="img" style="background:#E9E6DD"><svg viewBox="0 0 200 200"><use href="#p-copo"/></svg></div><i class="spk" style="background:var(--brasa)"></i><div class="meta"><span class="badge b-drop">−35%</span><span class="chip" style="color:var(--nevoa-d);height:22px">Amazon</span></div><h4>Copo térmico 900ml com canudo</h4><div class="row"><div><span class="was" style="font-size:12px">R$ 139,90</span><span class="price" style="display:block"><small>R$</small>89<sup>,90</sup></span></div><a class="btn btn-store btn-sm" href="#ds">Ver ↗</a></div></article>
+      <div class="panel" style="color:var(--off)"><h3>Card de produto</h3><ul class="clean" style="font-size:13px"><li>Foto com Quina (raio 12, corte 22)</li><li>Salto colorido por estado: Electric padrão · Midnight achadinho · Brasa queda</li><li>Preço Geist Mono 26/700 + "visto há…"</li><li>Loja sempre visível antes do clique</li><li>Hover: sobe 4px + sombra suave (240ms)</li></ul></div>
+    </div>
+    <div class="grid g2" style="margin-top:24px">
+      <div class="panel">
+        <h3>Espaço, raio, sombra</h3>
+        <div style="display:flex;align-items:flex-end;gap:10px;margin:16px 0">
+          <div style="width:4px;height:4px;background:var(--lime)"></div><div style="width:8px;height:8px;background:var(--lime)"></div><div style="width:12px;height:12px;background:var(--lime)"></div><div style="width:16px;height:16px;background:var(--lime)"></div><div style="width:24px;height:24px;background:var(--lime)"></div><div style="width:32px;height:32px;background:var(--lime)"></div><div style="width:48px;height:48px;background:var(--lime)"></div><div style="width:64px;height:64px;background:var(--lime)"></div><div style="width:96px;height:96px;background:var(--lime)"></div>
+        </div>
+        <p class="mono" style="font-size:12px" class="muted">Base 4 · 4 8 12 16 24 32 48 64 96 · raio 6 / 12 / 20 / pill · sombra dura 4·4·0 Midnight (ação) · sombra suave 0·12·32 (elevação)</p>
+      </div>
+      <div class="panel" style="padding:0;background:none;border:0">
+<pre>/* app/globals.css — Tailwind v4 */
+@import "tailwindcss";
+@theme {
+  --color-midnight: #101426;  --color-noite: #1D2240;
+  --color-lime: #C8F36A;      --color-lime-soft: #EEFBCF;
+  --color-electric: #765BFF;  --color-electric-deep: #5B3FE8;
+  --color-lilas: #E6E0FF;     --color-off: #F5F4F0;
+  --color-brasa: #FF5A36;     --color-nevoa: #6B6F84;
+  --color-linha: #DEDCD3;
+  --font-display: "Bricolage Grotesque", sans-serif;
+  --font-sans: "Instrument Sans", sans-serif;
+  --font-mono: "Geist Mono", monospace;
+  --radius-s: 6px; --radius-m: 12px; --radius-l: 20px;
+  --shadow-hard: 4px 4px 0 #101426;
+  --shadow-soft: 0 12px 32px -12px rgb(16 20 38 / .28);
+  --ease-salto: cubic-bezier(.2,.9,.1,1);
+  --ease-pulo: cubic-bezier(.3,1.6,.5,1);
+}
+@utility quina {
+  clip-path: polygon(0 0, calc(100% - var(--q,22px)) 0,
+    100% var(--q,22px), 100% 100%, 0 100%);
+}</pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 12 SITE ============ -->
+<section id="site">
+  <div class="wrap">
+    <div class="sec-head"><div class="sec-num">12</div><div><h2 class="disp">O site</h2><p>Uma experiência de descoberta, não uma grade de produtos: a home abre com o "Radar" (o que está subindo agora), depois categorias visuais, depois listas com contexto.</p></div></div>
+    <div class="browser">
+      <div class="bar"><i></i><i></i><i></i><span>viratrend.com.br</span></div>
+      <div class="s-header"><svg viewBox="0 0 546 92" style="height:26px;width:auto;flex:none"><use href="#lh"/></svg><nav><a class="on" href="#site">Em alta</a><a href="#site">Categorias</a><a href="#site">Ofertas</a><a href="#site">Sobre</a></nav><label class="search" style="height:44px;flex:1;max-width:340px;margin-left:auto;box-shadow:none;border-width:1.5px"><svg viewBox="0 0 24 24" width="18" fill="none" stroke="#101426" stroke-width="2.4"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/></svg><input placeholder="Buscar achados" aria-label="Buscar"></label></div>
+      <div class="fita" style="font-size:11px;padding:8px 0"><span><b>Subindo agora: mini projetor +312% <i class="tri"></i></b><b>copo térmico +180% <i class="tri"></i></b><b>organizador giratório +96% <i class="tri"></i></b><b>Subindo agora: mini projetor +312% <i class="tri"></i></b><b>copo térmico +180% <i class="tri"></i></b><b>organizador giratório +96% <i class="tri"></i></b></span></div>
+      <div class="s-hero">
+        <div>
+          <p class="eyebrow" style="color:var(--purple-deep)">Radar da semana · 05/11</p>
+          <h1 class="disp" style="margin:16px 0 24px">Produtos que viralizam. <span class="mark">Achados</span> que valem a pena.</h1>
+          <label class="search"><svg viewBox="0 0 24 24" width="20" fill="none" stroke="#101426" stroke-width="2.4"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/></svg><input placeholder="O que está em alta, você encontra aqui" aria-label="Buscar produtos"><span class="btn btn-secondary btn-sm">Buscar</span></label>
+          <div class="chips"><span>fone bluetooth</span><span>organizador</span><span>luminária</span><span>skincare</span></div>
+        </div>
+        <div class="radar">
+          <article class="pcard"><div class="img" style="background:var(--lilas)"><svg viewBox="0 0 200 200"><use href="#p-lumi"/></svg></div><i class="spk"></i><div class="meta"><span class="badge b-achado">Achadinho</span></div><h4 style="min-height:0">Luminária touch sem fio</h4><div class="row"><span class="price"><small>R$</small>64</span></div></article>
+          <article class="pcard"><div class="img"><svg viewBox="0 0 200 200"><use href="#p-fone"/></svg></div><i class="spk"></i><div class="meta"><span class="badge b-alta">Em alta</span><span class="chip" style="color:var(--nevoa-d);height:22px">Amazon</span></div><h4 style="min-height:0">Fone com estojo compacto</h4><div class="row"><span class="price"><small>R$</small>89<sup>,90</sup></span></div></article>
+          <div class="meter"><span class="sinal" data-n="5" style="height:26px"><i style="width:7px"></i><i style="width:7px"></i><i style="width:7px"></i><i style="width:7px"></i><i style="width:7px"></i></span><div><p class="mono" style="font-size:20px;font-weight:700;color:var(--lime)">+312%</p><p class="eyebrow" style="font-size:10px;color:var(--nevoa)">buscas esta semana</p></div></div>
+        </div>
+      </div>
+      <div class="s-cats">
+        <div class="cat q" style="background:var(--midnight);color:var(--lime)">Virais<small>128 itens</small></div>
+        <div class="cat" style="background:var(--lime)">Casa &amp; decoração<small>94 itens</small></div>
+        <div class="cat" style="background:var(--purple);color:#fff">Tech &amp; acessórios<small>210 itens</small></div>
+        <div class="cat" style="background:var(--lilas)">Beleza<small>76 itens</small></div>
+        <div class="cat" style="background:var(--white);border:1px solid var(--linha)">Moda<small>58 itens</small></div>
+        <div class="cat" style="background:var(--noite);color:var(--off)">Utilidades<small>142 itens</small></div>
+      </div>
+      <div class="s-row">
+        <div class="s-row-h"><h2 class="disp">Em alta agora</h2><a class="btn btn-ghost btn-sm" href="#site">Ver tudo</a></div>
+        <div class="s-prods">
+          <article class="pcard"><div class="img"><svg viewBox="0 0 200 200"><use href="#p-fone"/></svg></div><i class="spk"></i><div class="meta"><span class="badge b-alta">Em alta</span><span class="chip" style="color:var(--nevoa-d);height:22px">Amazon</span></div><h4>Fone bluetooth com estojo compacto</h4><div class="row"><div><span class="price"><small>R$</small>89<sup>,90</sup></span><p class="seen">visto há 2h</p></div><a class="btn btn-store btn-sm" href="#site">Ver ↗</a></div></article>
+          <article class="pcard"><div class="img" style="background:var(--lilas)"><svg viewBox="0 0 200 200"><use href="#p-watch"/></svg></div><i class="spk"></i><div class="meta"><span class="badge b-alta">Em alta</span><span class="chip" style="color:var(--nevoa-d);height:22px">M. Livre</span></div><h4>Smartband com 14 dias de bateria</h4><div class="row"><div><span class="price"><small>R$</small>159</span><p class="seen">visto há 1h</p></div><a class="btn btn-store btn-sm" href="#site">Ver ↗</a></div></article>
+          <article class="pcard"><div class="img" style="background:#E9E6DD"><svg viewBox="0 0 200 200"><use href="#p-copo"/></svg></div><i class="spk" style="background:var(--brasa)"></i><div class="meta"><span class="badge b-drop">−35%</span><span class="chip" style="color:var(--nevoa-d);height:22px">Amazon</span></div><h4>Copo térmico 900ml com canudo</h4><div class="row"><div><span class="price"><small>R$</small>89<sup>,90</sup></span><p class="seen">visto há 3h</p></div><a class="btn btn-store btn-sm" href="#site">Ver ↗</a></div></article>
+          <article class="pcard"><div class="img" style="background:var(--lime-soft)"><svg viewBox="0 0 200 200"><use href="#p-serum"/></svg></div><i class="spk" style="background:var(--midnight)"></i><div class="meta"><span class="badge b-achado">Achadinho</span><span class="chip" style="color:var(--nevoa-d);height:22px">M. Livre</span></div><h4>Sérum de niacinamida 30ml</h4><div class="row"><div><span class="price"><small>R$</small>42<sup>,50</sup></span><p class="seen">visto há 40min</p></div><a class="btn btn-store btn-sm" href="#site">Ver ↗</a></div></article>
+        </div>
+      </div>
+      <div class="dark" style="padding:28px 32px;display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap"><svg viewBox="0 0 546 92" style="height:22px;width:auto;color:var(--off);--qb:var(--lime);--wd:var(--lime)"><use href="#lh"/></svg><p class="muted" style="font-size:12px;max-width:560px">A ViraTrend participa dos programas de afiliados da Amazon e do Mercado Livre e pode receber comissão por compras feitas pelos links. Preços e disponibilidade podem mudar.</p></div>
+    </div>
+    <p class="cap">Home · desktop 1280</p>
+
+    <div style="display:flex;gap:40px;flex-wrap:wrap;margin-top:56px;align-items:flex-start">
+      <div>
+        <div class="phone"><div class="screen" style="background:var(--off)">
+          <div class="m-head"><svg viewBox="0 0 546 92" style="height:20px;width:auto"><use href="#lh"/></svg><svg viewBox="0 0 24 24" width="22" fill="none" stroke="#101426" stroke-width="2.4"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/></svg></div>
+          <div class="fita" style="font-size:10px;padding:7px 0"><span><b>+312% mini projetor <i class="tri"></i></b><b>+180% copo térmico <i class="tri"></i></b><b>+312% mini projetor <i class="tri"></i></b><b>+180% copo térmico <i class="tri"></i></b></span></div>
+          <div style="padding:18px 16px 96px">
+            <h1 class="disp" style="font-size:42px">O que <span class="mark">virou</span> essa semana</h1>
+            <div style="display:flex;gap:6px;overflow:auto;margin:14px -16px;padding:0 16px;scrollbar-width:none"><span class="badge b-dark">Tudo</span><span class="badge b-line">Casa</span><span class="badge b-line">Tech</span><span class="badge b-line">Beleza</span><span class="badge b-line">Moda</span></div>
+            <div class="t1 post" style="border-radius:var(--r-l)" data-clone-inline="tpl1"></div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px">
+              <article class="pcard" style="padding:8px;--q:16px"><div class="img"><svg viewBox="0 0 200 200"><use href="#p-lumi"/></svg></div><i class="spk" style="top:1px;right:1px"></i><h4 style="font-size:12px;margin:8px 2px">Luminária touch</h4><div class="row" style="margin:0 2px"><span class="price" style="font-size:18px"><small>R$</small>64</span></div></article>
+              <article class="pcard" style="padding:8px;--q:16px"><div class="img" style="background:var(--lilas)"><svg viewBox="0 0 200 200"><use href="#p-serum"/></svg></div><i class="spk" style="top:1px;right:1px;background:var(--midnight)"></i><h4 style="font-size:12px;margin:8px 2px">Sérum 30ml</h4><div class="row" style="margin:0 2px"><span class="price" style="font-size:18px"><small>R$</small>42<sup>,50</sup></span></div></article>
+            </div>
+          </div>
+          <div class="m-tabs" style="position:sticky;margin-top:-72px">
+            <a class="on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11L12 4l9 7v9H3z"/></svg>Início</a>
+            <a><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19L10 12l4 4 6-8M15 8h5v5"/></svg>Em alta</a>
+            <a><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/></svg>Busca</a>
+            <a><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12V3h9l9 9-9 9z"/><circle cx="8" cy="8" r="1.5"/></svg>Ofertas</a>
+            <a><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>Categ.</a>
+          </div>
+        </div></div>
+        <p class="cap" style="text-align:center">Home · mobile 375</p>
+      </div>
+      <div style="flex:1;min-width:300px">
+        <h3 class="disp" style="font-size:36px;margin-bottom:18px">Direção por página</h3>
+        <ul class="clean">
+          <li><b>Home</b> — Radar (fita "subindo agora" + 2 cards em leque + Sinal), busca protagonista, categorias em blocos de cor, listas temáticas com título editorial ("5 achados de casa abaixo de R$ 100").</li>
+          <li><b>Em alta</b> — ranking numerado (números gigantes em Bricolage), Sinal ao lado de cada item, filtro por período: hoje / semana / mês.</li>
+          <li><b>Categorias</b> — cada categoria tem cor-base fixa (Casa = Lime, Tech = Electric, Beleza = Lilás). Header com Quina grande e contagem de itens.</li>
+          <li><b>Ofertas</b> — fundo Midnight, preço antigo/novo, data e hora sempre; selo Brasa só com histórico real. Sem contadores regressivos.</li>
+          <li><b>Busca</b> — estado vazio com sugestões "em alta agora"; resultados com chips de loja e faixa de preço; zero resultado sugere categoria.</li>
+          <li><b>Produto</b> — foto grande com Quina, bloco "Por que vale" (3 bullets), "Por que viralizou", tabela de preços por loja com data, botões de loja empilhados, aviso de afiliado acima dos botões.</li>
+          <li><b>Sobre</b> — manifesto em display gigante, como a curadoria funciona, como ganhamos dinheiro (transparência de afiliados).</li>
+        </ul>
+        <div class="panel" style="margin-top:24px">
+          <p class="eyebrow">Movimento na interface</p>
+          <p style="margin-top:8px;font-size:14px">Entrada de cards em cascata de 40ms · hover que sobe 4px · salto que "pula" ao favoritar · fita sempre em loop lento · preços que viram (flip) quando atualizam. Tudo desligado com <code>prefers-reduced-motion</code>.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 13 MOTION ============ -->
+<section id="motion" class="dark">
+  <div class="wrap">
+    <div class="sec-head"><div class="sec-num">13</div><div><h2 class="disp">Movimento</h2><p class="muted">Rápido, com um único "pulo" por animação. A curva <b style="color:var(--off)">Salto</b> (cubic-bezier .2,.9,.1,1) para entradas; a curva <b style="color:var(--off)">Pulo</b> (.3,1.6,.5,1, com overshoot) só para o canto que salta. Clique em ▶ para repetir.</p></div></div>
+    <div class="grid g2">
+      <div>
+        <div class="stage-m play" data-demo style="background:var(--midnight);border:1px solid #2B3157">
+          <svg class="lg-intro" viewBox="0 12 546 92" style="color:var(--off)">
+            <g transform="translate(0 14.1) scale(.8)"><path class="lg-body" fill="#C8F36A" d="M0 16C0 7.2 7.2 0 16 0H56L100 44V84C100 92.8 92.8 100 84 100H16C7.2 100 0 92.8 0 84Z" transform="translate(0 8)"/><path class="lg-spark" fill="#765BFF" d="M64 0H108V44Z"/></g>
+            <g class="lg-word"><use href="#w" x="106" y="14" width="440" height="92" style="--wd:#C8F36A"/></g>
+          </svg>
+          <button class="btn btn-ghost btn-sm replay">▶</button>
+        </div>
+        <p class="cap">1 · Entrada do logo — bloco surge (0–500ms), canto salta (320–870ms), nome desliza (420–1020ms)</p>
+      </div>
+      <div>
+        <div class="stage-m play" data-demo style="background:var(--purple)">
+          <div class="flip"><span class="was" style="font-size:22px;color:var(--off);opacity:.85">R$ 139,90</span><span class="price"><small>R$</small>89<sup>,90</sup></span><span class="badge b-dark">Caiu o preço <i class="tri"></i></span></div>
+          <button class="btn btn-ghost btn-sm replay" style="color:var(--white)">▶</button>
+        </div>
+        <p class="cap">2 · Oferta — o risco atravessa o preço antigo, o novo vira como placa de aeroporto</p>
+      </div>
+      <div>
+        <div class="stage-m play cardin" data-demo style="background:var(--off);color:var(--midnight)">
+          <article class="pcard"><div class="img"><svg viewBox="0 0 200 200"><use href="#p-fone"/></svg></div><i class="spk"></i><h4 style="min-height:0;margin-top:10px">Fone compacto</h4></article>
+          <button class="btn btn-ghost btn-sm replay">▶</button>
+        </div>
+        <p class="cap">3 · Apresentação de produto — o card se abre na diagonal da Quina e o salto pula por último</p>
+      </div>
+      <div>
+        <div class="stage-m play" data-demo style="background:var(--midnight)">
+          <div class="wipe"></div>
+          <span class="disp" style="font-size:54px">Próximo achado</span>
+          <button class="btn btn-ghost btn-sm replay">▶</button>
+        </div>
+        <p class="cap">4 · Transição — triângulo lime varre a tela na diagonal do salto (1s), cobre o corte do vídeo</p>
+      </div>
+    </div>
+    <h3 class="disp" style="font-size:36px;margin:56px 0 20px">Vinheta vertical · 1,6s</h3>
+    <div class="story-board">
+      <figure style="background:var(--midnight)"><svg viewBox="0 0 108 108" style="width:30%;--qb:var(--lime);--qs:transparent"><use href="#q"/></svg><figcaption style="color:var(--nevoa)">0,0s · bloco cresce do centro</figcaption></figure>
+      <figure style="background:var(--midnight)"><svg viewBox="0 0 108 108" style="width:30%;--qb:var(--lime)"><use href="#q"/></svg><figcaption style="color:var(--nevoa)">0,3s · o canto salta (Pulo)</figcaption></figure>
+      <figure style="background:var(--lime)"><svg viewBox="0 0 108 108" style="width:80%;--qb:var(--midnight)"><use href="#q"/></svg><figcaption>0,6s · zoom no salto, fundo vira lime</figcaption></figure>
+      <figure style="background:var(--purple)"><svg viewBox="0 0 546 92" style="width:84%;color:var(--off);--qs:var(--lime);--wd:var(--lime)"><use href="#lh"/></svg><figcaption style="color:var(--off)">1,0s · assinatura completa</figcaption></figure>
+      <figure style="background:var(--purple);place-items:end center"><div class="fita" style="width:100%;margin-bottom:30%"><span><b>Achados que valem a pena <i class="tri"></i></b><b>Achados que valem a pena <i class="tri"></i></b></span></div><figcaption style="color:var(--off)">1,3s · fita entra · corte para o vídeo</figcaption></figure>
+    </div>
+    <div class="grid g3" style="margin-top:32px">
+      <div class="panel"><h3>Durações</h3><p class="mono muted" style="font-size:13px">UI 160–240ms · entradas 400–600ms · vinheta 1,6s · transição de vídeo 8–12 frames a 30fps</p></div>
+      <div class="panel"><h3>Elementos de oferta</h3><p class="muted" style="font-size:14px">Preço que vira, risco que atravessa, fita em loop. Nada pisca, nada treme, nada conta regressivamente.</p></div>
+      <div class="panel"><h3>Produção</h3><p class="muted" style="font-size:14px">Para MP4/Lottie: importar o símbolo no EffectCraft com <code>edit.pasteSvg</code>, recriar estes keyframes e exportar com <code>render</code> (webm com alpha para sobrepor em vídeo) e <code>file.exportLottie</code> para o site.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 14 ARQUIVOS ============ -->
+<section id="arquivos">
+  <div class="wrap">
+    <div class="sec-head"><div class="sec-num">14</div><div><h2 class="disp">Arquivos</h2><p>Logos extraídos deste próprio arquivo: SVG vetorial editável (o wordmark é traço — mude <code>stroke-width</code> para ajustar o peso) e PNG transparente em 2048px.</p></div></div>
+    <div class="panel" style="padding:0;overflow:auto"><table id="downloads"><thead><tr><th>Peça</th><th>Prévia</th><th>Baixar</th></tr></thead><tbody></tbody></table></div>
+    <div class="grid g2" style="margin-top:24px">
+      <div class="panel"><h3>O que está neste arquivo</h3><p class="muted" style="font-size:14px">Estratégia, 3 propostas, logo definitivo e variações, paleta com HEX/RGB/HSL e contraste, tipografia, 6 elementos gráficos, direção de foto, perfis IG/TikTok, 5 templates de feed + story + Reels + carrossel editáveis, design system com tokens Tailwind v4, home desktop e mobile, direção das 7 páginas e 4 demos de motion.</p></div>
+      <div class="panel"><h3>Antes de produzir</h3><ul class="clean" style="font-size:14px"><li>Busca no INPI e registro de domínio/handles.</li><li>Trocar ilustrações placeholder por fotos reais.</li><li>Exportar motion em MP4/Lottie no EffectCraft.</li><li>Revisão humana final — peça gerada com ferramentas em versão alpha.</li></ul></div>
+    </div>
+  </div>
+</section>
+
+<footer class="dark" style="padding:48px 0">
+  <div class="wrap" style="display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap">
+    <svg viewBox="0 0 546 92" style="height:28px;width:auto;color:var(--off);--qb:var(--lime);--wd:var(--lime)"><use href="#lh"/></svg>
+    <p class="mono muted" style="font-size:12px">ViraTrend Brandbook v1.0 · 05/11/2026</p>
+  </div>
+</footer>
+
+<script>
+// Clona templates para grades/miniaturas (escalam sozinhos via cqw). data-v alterna variantes de cor.
+const V = {b:{'--purple':'#C8F36A'}, c:{'--midnight':'#1D2240'}};
+const prods = ['p-fone','p-lumi','p-watch','p-serum','p-copo'];
+document.querySelectorAll('[data-clone],[data-clone-inline]').forEach((el, i) => {
+  const inline = el.dataset.cloneInline;
+  const c = document.getElementById(inline || el.dataset.clone).cloneNode(true);
+  c.removeAttribute('id');
+  c.querySelectorAll('[contenteditable]').forEach(e => e.removeAttribute('contenteditable'));
+  if (el.dataset.v) { Object.entries(V[el.dataset.v]).forEach(([k, v]) => c.style.setProperty(k, v));
+    const u = c.querySelector('.slot use'); if (u) u.setAttribute('href', '#' + prods[i % prods.length]); }
+  if (inline) { el.replaceWith(c); c.style.borderRadius = 'var(--r-l)'; } else el.appendChild(c);
+});
+
+// Troca de imagem nos templates: duplo clique no slot
+document.querySelectorAll('.slot').forEach(s => s.addEventListener('dblclick', () => {
+  const i = Object.assign(document.createElement('input'), {type: 'file', accept: 'image/*'});
+  i.onchange = () => { if (!i.files[0]) return; s.style.backgroundImage = `url(${URL.createObjectURL(i.files[0])})`; s.classList.add('has-img'); };
+  i.click();
+}));
+
+// Repetir demos de motion
+document.querySelectorAll('[data-demo] .replay').forEach(b => b.addEventListener('click', () => {
+  const d = b.closest('[data-demo]'); d.classList.remove('play'); void d.offsetWidth; d.classList.add('play');
+}));
+
+// Exportação de logos: resolve <use> aninhados e variáveis CSS em cores fixas
+function svgOf(id, vars) {
+  const s = document.getElementById(id), vb = s.getAttribute('viewBox');
+  let inner = s.innerHTML;
+  for (let k = 0; k < 3; k++) inner = inner.replace(/<use href="#([\w-]+)"([^>]*)><\/use>/g, (m, ref, attrs) => {
+    const t = document.getElementById(ref); return `<svg viewBox="${t.getAttribute('viewBox')}"${attrs}>${t.innerHTML}</svg>`; });
+  inner = inner.replace(/var\(--(\w+)(?:,([^)]*))?\)/g, (m, k, fb) => vars[k] ?? fb)
+               .replace(/currentColor/g, vars.wc || '#101426');
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${vb}">${inner}</svg>`;
+}
+function save(blob, name) { const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; a.click(); }
+function png(svg, name) {
+  const [, , w, h] = svg.match(/viewBox="([^"]+)"/)[1].split(/\s+/).map(Number);
+  const W = 2048, H = Math.round(W * h / w), img = new Image();
+  img.onload = () => { const c = Object.assign(document.createElement('canvas'), {width: W, height: H}); c.getContext('2d').drawImage(img, 0, 0, W, H); c.toBlob(b => save(b, name)); };
+  img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+}
+const M = '#101426', L = '#C8F36A', P = '#765BFF', O = '#F5F4F0';
+const files = [
+  ['viratrend-horizontal-claro', 'lh', {qb: M, qs: P, wc: M, wd: P}, O],
+  ['viratrend-horizontal-escuro', 'lh', {qb: L, qs: P, wc: O, wd: L}, M],
+  ['viratrend-vertical-claro', 'lv', {qb: M, qs: P, wc: M, wd: P}, O],
+  ['viratrend-vertical-escuro', 'lv', {qb: L, qs: P, wc: O, wd: L}, M],
+  ['viratrend-horizontal-mono-preto', 'lh', {qb: M, qs: M, wc: M, wd: M}, O],
+  ['viratrend-horizontal-mono-branco', 'lh', {qb: O, qs: O, wc: O, wd: O}, M],
+  ['viratrend-simbolo-claro', 'q', {qb: M, qs: P}, O],
+  ['viratrend-simbolo-escuro', 'q', {qb: L, qs: P}, M],
+  ['viratrend-wordmark', 'w', {wc: M, wd: P}, O],
+  ['viratrend-avatar', 'av', {ab: M, qb: L, qs: P}, O],
+];
+const tb = document.querySelector('#downloads tbody');
+files.forEach(([name, id, vars, bg]) => {
+  const svg = svgOf(id, vars), tr = document.createElement('tr');
+  tr.innerHTML = `<td class="mono" style="font-size:13px">${name}</td><td><div style="background:${bg};padding:10px 14px;border-radius:8px;width:200px;height:60px;display:grid;place-items:center;border:1px solid var(--linha)"><img alt="" style="max-height:40px;max-width:170px" src="data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}"></div></td><td><button class="btn btn-ghost btn-sm">SVG</button> <button class="btn btn-ghost btn-sm">PNG 2048</button></td>`;
+  const [bs, bp] = tr.querySelectorAll('button');
+  bs.onclick = () => save(new Blob([svg], {type: 'image/svg+xml'}), name + '.svg');
+  bp.onclick = () => png(svg, name + '.png');
+  tb.appendChild(tr);
+});
+</script>
+</body>
+</html>
