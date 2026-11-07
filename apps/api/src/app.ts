@@ -1,15 +1,19 @@
 import express from 'express';
 import helmet from 'helmet';
 import cors from 'cors';
-import { rateLimit } from 'express-rate-limit';
 import { env } from './config/env.js';
-import { healthRouter } from './routes/health.routes.js';
+import { buildRouter } from './routes/index.js';
 import { errorHandler, notFound } from './middlewares/error-handler.js';
+import { globalLimiter } from './middlewares/rate-limits.js';
 
 export function createApp() {
   const app = express();
 
   app.disable('x-powered-by');
+  // IDs BIGINT (price_history, clicks) viram string no JSON — JSON.stringify não aceita BigInt.
+  app.set('json replacer', (_key: string, value: unknown) =>
+    typeof value === 'bigint' ? value.toString() : value,
+  );
   // Atrás do proxy da Hostinger o IP real vem em X-Forwarded-For; sem isso o rate limit
   // trataria todos os visitantes como um só.
   app.set('trust proxy', env.TRUST_PROXY);
@@ -23,12 +27,9 @@ export function createApp() {
     }),
   );
   app.use(express.json({ limit: '100kb' }));
-  // Limite geral por IP. Rotas sensíveis (login) recebem limites próprios na Fase 3.
-  app.use(
-    rateLimit({ windowMs: 60_000, limit: 300, standardHeaders: 'draft-8', legacyHeaders: false }),
-  );
+  app.use(globalLimiter);
 
-  app.use('/health', healthRouter);
+  app.use(buildRouter());
 
   app.use(notFound);
   app.use(errorHandler);

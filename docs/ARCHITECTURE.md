@@ -1,6 +1,6 @@
 # ViraTrend — Arquitetura, modelo de dados e plano
 
-Fase 1 (auditoria e planejamento) e registro das decisões da Fase 2 (fundação). Atualizado em 06/11/2026.
+Fases 1 (auditoria), 2 (fundação), 3 (banco e API), 4 (interface pública), 5 (painel) e 6 (finalização). Deploy: [DEPLOY.md](DEPLOY.md). Atualizado em 06/11/2026. Referência dos endpoints: §9.
 
 ---
 
@@ -84,7 +84,7 @@ Fonte única: [`docs/brand/ViraTrend-Identidade.html`](brand/ViraTrend-Identidad
 | 07  | **Clique via `/go/:id` na API** (registra e redireciona 302)                                                  | Uma ida só; a URL de afiliado pode mudar sem republicar o site; dá para desativar link expirado na hora. Links públicos levam `rel="sponsored nofollow"`. | —                                                                    |
 | 08  | **Clique sem IP nem ID de visitante**                                                                         | LGPD: dado mínimo. Guardamos link, produto, loja, host de origem e `utm_source`.                                                                          | Precisar de antifraude de cliques                                    |
 | 09  | **Busca com `LIKE`** em nome/palavras-chave/descrição/categoria                                               | Catálogo inicial pequeno; índice FULLTEXT do MySQL não casa bem com prefixos curtos em PT.                                                                | > ~5 mil produtos ou busca lenta → índice FULLTEXT via migration SQL |
-| 10  | **Imagens por URL** (`product_images.url`) com crédito/origem                                                 | Hospedagem compartilhada pode não preservar arquivos entre deploys (§7). Upload direto fica para quando o storage estiver decidido.                       | Fase 3: escolher storage (ver §7, risco R3)                          |
+| 10  | **Imagens por URL** (`product_images.url`) com crédito/origem                                                 | Hospedagem compartilhada pode não preservar arquivos entre deploys (§7). Upload direto fica para quando o storage estiver decidido.                       | Antes da Fase 5: escolher storage (ver §7, risco R3)                 |
 | 11  | **Prisma 7 + `@prisma/adapter-mariadb`**                                                                      | Versão estável atual; o adapter é o driver oficial para MySQL no Prisma 7 e permite limitar o pool.                                                       | —                                                                    |
 | 12  | **TypeScript 5.9 e ESLint 9** (não TS 7 / ESLint 10)                                                          | `typescript-eslint` e `eslint-config-next` ainda validados nessas versões.                                                                                | Ecossistema estabilizar                                              |
 
@@ -107,15 +107,15 @@ viratrend/
 │   │   ├── lib/                  site.ts ✔, api.ts (cliente server-only, Fase 4)
 │   │   └── styles/globals.css ✔ tokens da marca
 │   └── api/
-│       ├── prisma/               schema.prisma ✔, migrations/ ✔, seed.ts (Fase 3)
+│       ├── prisma/               schema.prisma ✔, migrations/ ✔, seed.ts ✔
 │       ├── prisma.config.ts ✔
 │       └── src/
 │           ├── config/           env.ts ✔ (validação Zod), db.ts ✔ (pool)
-│           ├── middlewares/      error-handler.ts ✔, auth.ts, rate-limits.ts (Fase 3)
-│           ├── routes/           health.routes.ts ✔, public/, admin/ (Fase 3)
-│           ├── controllers/      HTTP ↔ serviço (Fase 3)
-│           ├── services/         regras de negócio (Fase 3)
-│           ├── repositories/     único lugar com Prisma (Fase 3)
+│           ├── middlewares/      error-handler.ts ✔, auth.ts ✔, rate-limits.ts ✔
+│           ├── routes/           index.ts ✔ (mapa único de rotas), health.routes.ts ✔
+│           ├── controllers/      public ✔, admin ✔, auth ✔ — HTTP ↔ serviço
+│           ├── services/         auth ✔, catalog ✔, product ✔, click ✔ — regras de negócio
+│           ├── repositories/     auth ✔, catalog ✔, product ✔, click ✔ — único lugar com Prisma
 │           ├── utils/            http-error.ts ✔
 │           ├── app.ts ✔          helmet, CORS fechado, rate limit, JSON 100 kb
 │           └── server.ts ✔       listen + desligamento limpo (SIGTERM)
@@ -145,20 +145,32 @@ Implementado em [`apps/api/prisma/schema.prisma`](../apps/api/prisma/schema.pris
 | `price_history`   | Cada preço conferido, só inserção, com quem/como conferiu               | FK link `CASCADE`; idx (`affiliate_link_id`,`checked_at`)                                       | nunca                          |
 | `clicks`          | Interesse por produto e loja (ADR-08)                                   | FKs `RESTRICT`; idx (`product_id`,`created_at`), (`store_id`,`created_at`), `created_at`        | nunca                          |
 
-Regras que o banco não expressa e ficam no serviço (Fase 3), sempre em transação:
+Regras que o banco não expressa e ficam no serviço, em transação (implementadas e cobertas pelo teste de integração):
 
 - No máximo **um link principal** por produto (MySQL não tem índice único parcial).
 - Ao salvar preço novo: atualiza `affiliate_links.price_cents` **e** insere em `price_history`.
-- `offer_status = VERIFIED` exige `offer_checked_at`; ofertas com mais de N dias sem conferência expiram (job ou na leitura).
+- `offer_status = VERIFIED` exige preço registrado e grava `offer_checked_at`; a oferta só aparece como conferida por 7 dias (`OFFER_MAX_AGE_DAYS`), calculado na leitura — sem job.
+- Desativar o link principal promove outro link ativo do mesmo produto.
 - Produto `ACTIVE` exige categoria ativa, ao menos uma imagem e um link ativo.
 
 ---
 
-## 6. Segurança (base pronta na Fase 2 → completa na Fase 3)
+## 6. Segurança
 
 Pronto: `helmet`; CORS com lista fechada e `credentials`; rate limit global; corpo JSON ≤ 100 kb; `trust proxy` configurável; erros centralizados sem stack para o cliente; logs sem body/cookies; variáveis validadas no boot (só nomes aparecem em erro); `.env` fora do git; headers de segurança no Next; Prisma = consultas parametrizadas.
 
-Fase 3: login com **Argon2id**; cookie `HttpOnly`, `Secure` em produção, `SameSite=Lax`, `Domain=.viratrend.com.br`; rate limit específico no login (por IP + por e-mail); verificação de `Origin` em métodos que alteram dados (defesa CSRF além do SameSite); autorização por papel em `/admin/*`; criação do primeiro ADMIN por script de linha de comando (sem rota pública). Recuperação de senha só depois de existir envio de e-mail configurado e testado.
+Fase 3 (pronto e testado):
+
+- Senha com **Argon2id** (parâmetros padrão da lib: 64 MiB, t=3, p=4). E-mail inexistente também passa por um hash, para o tempo de resposta não revelar quem é administrador; a mensagem de erro é a mesma.
+- Sessão opaca: token aleatório de 256 bits no cookie, SHA-256 no banco, validade `SESSION_TTL_HOURS`. Em produção o cookie é `__Host-vt_session` (`HttpOnly`, `Secure`, `SameSite=Lax`, `Path=/`, sem `Domain`): vale só para o host da API e não pode ser plantado por subdomínio. O painel chama a API direto do navegador com `credentials: 'include'`.
+- Defesa CSRF além do SameSite: `POST/PATCH/DELETE` em `/auth` e `/admin` exigem `Origin` dentro de `CORS_ORIGINS`.
+- Autorização: `/admin/*` exige ADMIN ou EDITOR; excluir categoria e criar/editar lojas só ADMIN.
+- Rate limit do login: 5 tentativas falhas por IP+e-mail e 30 por IP a cada 15 min.
+- Erros do Prisma viram 404/409 sem SQL na resposta; IDs BIGINT saem como string no JSON.
+- Sem cadastro público: o primeiro usuário nasce por `npm run admin:create -w @viratrend/api -- --email … --name …` (senha pedida no terminal ou em `ADMIN_PASSWORD`, nunca em argumento). O mesmo comando troca a senha e derruba as sessões abertas.
+- URL de afiliado nunca vai para o JSON público: o site recebe só `/go/:id`.
+
+Recuperação de senha: **não implementada** — depende de um envio de e-mail configurado e testado.
 
 ---
 
@@ -204,7 +216,120 @@ Nada foi contratado, publicado ou alterado em DNS.
 | ---- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
 | 1 ✔  | Auditoria, arquitetura, modelo, riscos, plano (este documento)                                                                                                                                                                                                                              | —                                                                                                      |
 | 2 ✔  | Monorepo, TS, Next + tokens/fontes/logo, Express + segurança base, Prisma + migration, env, lint/format, docs                                                                                                                                                                               | `typecheck`, `lint`, `format:check`, testes e `build` verdes; `/health` com DB ok                      |
-| 3    | Auth (Argon2id, sessões, papéis, script do 1º admin), seed de **demonstração marcado** (`[DEMO]`), endpoints públicos (listagens, produto, busca, categorias, ofertas) e admin (CRUD produtos, categorias, lojas, links, preços), `/go/:id`, rate limits, testes de integração dos serviços | Coleção de requests passa; login bloqueia após N tentativas; nenhum endpoint admin responde sem sessão |
-| 4    | Componentes da marca (botões, busca, badges, card de produto com Quina, Fita, Sinal, etiqueta de preço), home (Radar), Em alta, Categorias, Busca, Ofertas, produto, institucionais                                                                                                         | Lighthouse mobile ≥ 90; páginas idênticas ao brandbook §11–12                                          |
-| 5    | Painel: login, dashboard (totais, cliques, mais acessados), CRUDs, links, histórico de preços                                                                                                                                                                                               | Fluxo completo de cadastrar → publicar → clicar → ver no dashboard                                     |
-| 6    | SEO (metadata, OG via `next/og`, sitemap, robots, JSON-LD `Product` só com preço conferido), acessibilidade (WCAG 2.2 AA), revisão de segurança, documentação de deploy, checklist Hostinger §7                                                                                             | Checklist assinado; deploy só com autorização                                                          |
+| 3 ✔  | Auth (Argon2id, sessões, papéis, script do 1º admin), seed de **demonstração marcado** (`[DEMO]`), endpoints públicos (listagens, produto, busca, categorias, ofertas) e admin (CRUD produtos, categorias, lojas, links, preços), `/go/:id`, rate limits, testes de integração dos serviços | Coleção de requests passa; login bloqueia após N tentativas; nenhum endpoint admin responde sem sessão |
+| 4 ✔  | Componentes da marca (botões, busca, badges, card de produto com Quina, Fita, Sinal, etiqueta de preço), home (Radar), Em alta, Categorias, Busca, Ofertas, produto, institucionais                                                                                                         | Lighthouse mobile ≥ 90; páginas idênticas ao brandbook §11–12                                          |
+| 5 ✔  | Painel: login, dashboard (totais, cliques, mais acessados), CRUDs, links, histórico de preços                                                                                                                                                                                               | Fluxo completo de cadastrar → publicar → clicar → ver no dashboard                                     |
+| 6 ✔  | SEO (metadata, OG via `next/og`, sitemap, robots, JSON-LD `Product` só com preço conferido), acessibilidade (WCAG 2.2 AA), revisão de segurança, documentação de deploy, checklist Hostinger §7                                                                                             | Checklist assinado; deploy só com autorização                                                          |
+
+---
+
+## 9. API — referência (Fase 3)
+
+Base local `http://localhost:4000`. Erros sempre no formato `{ "error": { "code", "message", "details?" } }`.
+
+**Públicas** (somente leitura, `Cache-Control` curto para o CDN)
+
+| Método | Rota                     | O que faz                                                                                                                                                            |
+| ------ | ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| GET    | `/health`                | Processo + MySQL                                                                                                                                                     |
+| GET    | `/public/categories`     | Categorias ativas com contagem de produtos publicados                                                                                                                |
+| GET    | `/public/products`       | Cards paginados: `section` (featured, trending, recent, offers, popular), `category`, `q` (nome, resumo, palavras-chave, descrição, categoria), `page`, `limit` ≤ 48 |
+| GET    | `/public/products/:slug` | Detalhe: galeria, ofertas por loja (preço, preço anterior comprovado, data), relacionados                                                                            |
+| GET    | `/public/sitemap`        | Slugs e datas para o `sitemap.xml` do Next                                                                                                                           |
+| GET    | `/go/:id`                | Registra o clique (sem IP) e redireciona 302 para a loja. Link indisponível → volta ao produto/site                                                                  |
+
+`popular` = mais clicados em 30 dias (dado real). `offers` = links com oferta conferida há no máximo 7 dias.
+
+**Autenticação** (exige `Origin` confiável)
+
+| Método | Rota           | O que faz                                |
+| ------ | -------------- | ---------------------------------------- |
+| POST   | `/auth/login`  | `{ email, password }` → cookie de sessão |
+| POST   | `/auth/logout` | Apaga a sessão                           |
+| GET    | `/auth/me`     | Usuário da sessão                        |
+
+**Painel** — `/admin/*`, sessão obrigatória (ADMIN ou EDITOR); (ADMIN) = só administrador
+
+| Recurso    | Rotas                                                                                                                                                                                      |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Dashboard  | `GET /admin/dashboard` — totais, cliques (total, 30 dias, por loja), top 10 produtos                                                                                                       |
+| Categorias | `GET` e `POST /admin/categories` · `PATCH /admin/categories/:id` · `DELETE /admin/categories/:id` (ADMIN; 409 se tiver produtos)                                                           |
+| Lojas      | `GET /admin/stores` · `POST` (ADMIN) · `PATCH /admin/stores/:id` (ADMIN)                                                                                                                   |
+| Produtos   | `GET /admin/products?status&categoryId&q&page` · `POST` (nasce DRAFT) · `GET` e `PATCH /admin/products/:id` (publicar = `status: ACTIVE`, exige imagem e link ativo) · `DELETE` = arquivar |
+| Imagens    | `POST /admin/products/:id/images` (URL https, alt, crédito) · `DELETE /admin/images/:id`                                                                                                   |
+| Links      | `POST /admin/products/:id/links` (1º link vira principal; um por loja) · `PATCH /admin/links/:id` (`url`, `isPrimary: true`, `isActive`, `offerStatus`)                                    |
+| Preços     | `POST /admin/links/:id/prices` (`priceCents`, `source`) grava histórico e preço atual · `GET /admin/links/:id/prices`                                                                      |
+
+**Testes:** `npm test -w @viratrend/api` sobe a API contra um banco MySQL criado só para a execução (`viratrend_test_<timestamp>`, migrations via `migrate deploy`) e o remove no final. Cobre proteção do painel; login (erro igual para e-mail inexistente, origem, cookie); fluxo cadastrar → publicar → preço → oferta → clique → dashboard; link principal único; conflitos; arquivamento; logout; rate limit.
+
+**Decisões da Fase 3**
+
+- Schemas de entidade sem `.default()`: no Zod 4, `.partial()` preserva defaults e um `PATCH` parcial apagaria campos não enviados (bug pego pelo teste). Os padrões ficam no banco.
+- Sem `COOKIE_DOMAIN`: o cookie `__Host-` dispensa domínio compartilhado.
+- Sem `cookie-parser`: leitura do cookie em 8 linhas (`readCookie`).
+
+---
+
+## 10. Interface pública (Fase 4)
+
+**Páginas:** `/` (Radar + seções), `/em-alta`, `/ofertas`, `/categorias`, `/categoria/[slug]`, `/busca`, `/produto/[slug]`, `/sobre`, `/como-funcionam-os-links`, `/contato`, `/privacidade`, `/termos`, 404 e tela de erro.
+
+**Dados:** Server Components chamam a API em `lib/api.ts` (só no servidor; `API_URL` não chega ao navegador) com ISR de 60 s. Listagens degradam para vazio se a API cair — a seção some, a página não quebra. Produto inexistente → 404. `generateMetadata` e a página compartilham a mesma chamada (`react/cache`).
+
+**Componentes da marca:** `ProductCard` (Quina na foto, salto colorido pelo estado: Electric padrão, Lime oferta conferida, Brasa queda comprovada), `RankList` (números gigantes), `CategoryTile`, `Fita`, `Selo`, `Price`/`OfferPrice`, `OfferList`, `Gallery` (scroll-snap, sem JS), `SearchForm` (GET puro), `AffiliateNotice`, `MobileTabBar` (único componente cliente), `Pagination`.
+
+**Regras de honestidade aplicadas na UI:** seção sem dado real não aparece; preço anterior só quando a API o comprova; "oferta conferida" com data; "populares" = cliques reais; sem contagem regressiva, avaliações ou depoimentos; produto sem foto mostra bloco da categoria, nunca ilustração que pareça o produto; todo botão de loja tem `rel="sponsored nofollow noopener"` e o aviso de afiliado ao lado.
+
+**Configuração por ambiente** (ver `.env.example`): `IMAGE_HOSTS` (hosts otimizados pelo `next/image`; outros aparecem sem otimização), `NEXT_PUBLIC_TIKTOK_URL`, `NEXT_PUBLIC_INSTAGRAM_URL`, `NEXT_PUBLIC_CONTACT_EMAIL` — vazios, o site mostra "em breve" em vez de link inventado.
+
+**Pendências de conteúdo:** validar as cores de Games (Midnight + Lime) e Fitness (Lime Soft + Midnight) já aplicadas em `lib/category-theme.ts`; revisar Privacidade e Termos com assessoria jurídica; fotos reais com direito de uso.
+
+---
+
+## 11. Painel administrativo (Fase 5)
+
+**Rotas** (`apps/web/app/admin`, fora de buscadores via `robots: noindex`):
+
+| Rota                   | O que faz                                                                                                                                                                                                              |
+| ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `/admin/login`         | Login. Sem cadastro: usuários nascem por `npm run admin:create -w @viratrend/api`                                                                                                                                      |
+| `/admin`               | Dashboard: totais, publicados, destaques, em alta, categorias, cliques (30 dias e total), mais clicados, cliques por loja                                                                                              |
+| `/admin/produtos`      | Lista com busca e filtro de situação, paginada                                                                                                                                                                         |
+| `/admin/produtos/novo` | Cria rascunho                                                                                                                                                                                                          |
+| `/admin/produtos/[id]` | Publicar / voltar a rascunho / arquivar; fotos (URL https + alt + crédito); lojas e links (principal, trocar URL, desativar expirado); registrar preço (com fonte) e histórico; situação da oferta; conteúdo editorial |
+| `/admin/categorias`    | Criar, editar, desativar; excluir só se vazia (ADMIN)                                                                                                                                                                  |
+| `/admin/lojas`         | Criar e editar (ADMIN); editores só visualizam                                                                                                                                                                         |
+
+**Como funciona:** telas cliente que chamam a API direto do navegador (`lib/admin-api.ts`, `credentials: 'include'`). A sessão fica no cookie HttpOnly — o JavaScript nunca o lê. `AdminShell` confere `/auth/me` antes de mostrar o painel e qualquer 401 leva ao login; a proteção real continua na API (sessão, papel e origem em todas as rotas `/admin`). Formulários validam no navegador com os mesmos schemas Zod da API, com mensagens em português (`z.locales.ptBR`, ativado em `packages/shared`).
+
+**Preço digitado:** `parseBRLToCents` aceita `89,90`, `1.299,90`, `R$ 59`; recusa `12.5` (ambíguo) e valores com mais de 2 casas.
+
+**Verificado no navegador** (produção local, dados `[DEMO]`): guarda redireciona sem sessão; login; dashboard com números reais; criar produto com erros de campo em português; publicação recusada sem foto/link; oferta recusada sem preço; preço inválido recusado; dois preços → preço anterior aparece no site; publicar; criar e excluir categoria; lojas; painel em 375 px sem rolagem lateral; logout invalida a sessão na API.
+
+**Limitação conhecida:** fotos entram por URL — upload direto depende da decisão de storage (risco R3, §7).
+
+---
+
+## 12. Finalização (Fase 6)
+
+**SEO**
+
+- `sitemap.xml` (páginas fixas + categorias + produtos publicados, via `/public/sitemap`), `robots.txt` (bloqueia `/admin` e `/busca`; previews da Vercel bloqueiam tudo), metadata e canonical por página, `/busca` com `noindex`.
+- Imagem Open Graph padrão gerada com `next/og` a partir dos tokens; produto com foto usa a própria foto. O X/Twitter usa a `og:image`.
+- JSON-LD na página de produto (`lib/structured-data.ts`): `Product` + `BreadcrumbList`. `Offer` **só** se o preço foi conferido há menos de 24 h; nunca `availability`, avaliações ou notas; link de afiliado não aparece; serialização escapa `<` (sem XSS). Coberto por teste (`npm test -w @viratrend/web`).
+
+**Acessibilidade**
+
+- Contraste: branco sobre Electric (#765BFF) dá 4,05:1 — abaixo do AA para texto pequeno. Botão secundário, badge "achadinho" e o bloco da categoria Tecnologia passaram para Electric Deep (#5B3FE8, 6,3:1). Electric segue nos saltos, números do ranking e títulos grandes (AA para texto grande ≥ 3:1).
+- Auditoria automatizada em todas as páginas públicas (lang, um h1, ordem de títulos, alt, nome de links/botões, rótulos de campo, ids duplicados, title/description): o único problema — card `h3` direto sob o `h1` — foi corrigido com `headingLevel`.
+- Já existentes: link "Pular para o conteúdo", foco visível global, `prefers-reduced-motion`, decoração com `aria-hidden`, botões de loja com `aria-label` completo.
+
+**Segurança**
+
+- Site: CSP estático (ver comentário em `next.config.ts` sobre nonce × cache), HSTS, `X-Frame-Options: DENY`, `nosniff`, `Referrer-Policy`, `Permissions-Policy`.
+- API: além da Fase 3, `/go/:id` deixa de **contar** cliques acima de 20/min por IP (o visitante ainda é redirecionado) — robôs e F5 não inflam o dashboard. Testado.
+- `npm audit --omit=dev`: 0 vulnerabilidades (06/11/2026).
+
+**Build de produção verificado:** `npm run build:api` gera `apps/api/dist` (testes excluídos via `tsconfig.build.json`) e `node dist/server.js` respondeu `/health`, listagens e `/go`. `apps/web` compila sozinho a partir da própria pasta (`prebuild` compila `packages/shared`), como na Vercel.
+
+**Testes:** `npm test` na raiz roda shared (4), web (3) e API (5 cenários de integração contra MySQL real).

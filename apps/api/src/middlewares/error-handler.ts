@@ -33,6 +33,32 @@ export const errorHandler: ErrorRequestHandler = (err, req, res, _next) => {
       .json({ error: { code: 'BAD_JSON', message: 'JSON inválido' } } satisfies ApiError);
     return;
   }
+  // Erros conhecidos do Prisma viram respostas claras (sem expor SQL nem nomes internos).
+  const prismaCode =
+    (err as { name?: string; code?: string })?.name === 'PrismaClientKnownRequestError'
+      ? (err as { code: string }).code
+      : undefined;
+  if (prismaCode === 'P2002') {
+    res.status(409).json({
+      error: {
+        code: 'CONFLICT',
+        message: 'Já existe um registro com esse valor (slug, e-mail ou loja duplicada)',
+      },
+    } satisfies ApiError);
+    return;
+  }
+  if (prismaCode === 'P2003') {
+    res.status(409).json({
+      error: { code: 'RELATION', message: 'Registro relacionado inexistente ou em uso' },
+    } satisfies ApiError);
+    return;
+  }
+  if (prismaCode === 'P2025') {
+    res.status(404).json({
+      error: { code: 'NOT_FOUND', message: 'Registro não encontrado' },
+    } satisfies ApiError);
+    return;
+  }
   // Loga método, rota e stack — nunca body, cookies ou headers (podem conter senha/sessão).
   console.error(`[${req.method} ${req.path}]`, err instanceof Error ? err.stack : err);
   res.status(500).json({ error: { code: 'INTERNAL', message: 'Erro interno' } } satisfies ApiError);

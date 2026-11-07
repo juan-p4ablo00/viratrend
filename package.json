@@ -20,7 +20,10 @@
     "format:check": "prettier --check .",
     "db:migrate": "npm run db:migrate -w @viratrend/api",
     "db:deploy": "npm run db:deploy -w @viratrend/api",
-    "db:seed": "npm run db:seed -w @viratrend/api"
+    "db:seed": "npm run db:seed -w @viratrend/api",
+    "build:api": "npm run build:shared && npm run build -w @viratrend/api",
+    "start:api": "npm run start -w @viratrend/api",
+    "test": "npm run build:shared && npm test --workspaces --if-present"
   },
   "devDependencies": {
     "prettier": "3.9.10",

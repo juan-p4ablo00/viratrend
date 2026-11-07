@@ -7,6 +7,12 @@ export const siteConfig = {
   url: process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000',
   affiliateDisclosure:
     'A ViraTrend participa de programas de afiliados (Amazon e Mercado Livre) e pode receber comissão por compras feitas pelos links, sem custo extra para você. Preços e disponibilidade podem mudar na loja.',
+  // Perfis e contato vêm de variáveis de ambiente: nada é publicado antes de o perfil existir.
+  social: [
+    { label: 'TikTok', url: process.env.NEXT_PUBLIC_TIKTOK_URL },
+    { label: 'Instagram', url: process.env.NEXT_PUBLIC_INSTAGRAM_URL },
+  ].filter((s): s is { label: string; url: string } => !!s.url),
+  contactEmail: process.env.NEXT_PUBLIC_CONTACT_EMAIL,
 } as const;
 
 export const mainNav = [

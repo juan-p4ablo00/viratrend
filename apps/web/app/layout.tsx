@@ -1,7 +1,5 @@
 import type { Metadata, Viewport } from 'next';
 import { Bricolage_Grotesque, Geist_Mono, Instrument_Sans } from 'next/font/google';
-import { SiteHeader } from '@/components/layout/site-header';
-import { SiteFooter } from '@/components/layout/site-footer';
 import { siteConfig } from '@/lib/site';
 import '@/styles/globals.css';
 
@@ -44,11 +42,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         >
           Pular para o conteúdo
         </a>
-        <SiteHeader />
-        <main id="conteudo" className="flex-1">
-          {children}
-        </main>
-        <SiteFooter />
+        {children}
       </body>
     </html>
   );

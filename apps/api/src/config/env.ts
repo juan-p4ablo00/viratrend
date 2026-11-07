@@ -16,8 +16,6 @@ const schema = z.object({
       .map((o) => o.trim())
       .filter(Boolean),
   ),
-  /** Domínio do cookie de sessão em produção (ex.: .viratrend.com.br). Vazio = host atual. */
-  COOKIE_DOMAIN: z.string().optional(),
   SESSION_TTL_HOURS: z.coerce.number().int().min(1).max(720).default(12),
   /** URL pública da própria API, usada para montar os links /go/:id. */
   PUBLIC_API_URL: z.url(),

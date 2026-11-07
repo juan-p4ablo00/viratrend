@@ -53,6 +53,57 @@
   font-feature-settings: 'tnum';
 }
 
+/* Salto: o triângulo que "saiu" do canto. Fica fora do elemento cortado, deslocado --g. */
+@utility spark {
+  position: absolute;
+  top: calc(var(--g, 7px) * -1);
+  right: calc(var(--g, 7px) * -1);
+  width: var(--q, 22px);
+  height: var(--q, 22px);
+  clip-path: polygon(0 0, 100% 0, 100% 100%);
+  pointer-events: none;
+  transition: transform 240ms var(--ease-pulo);
+}
+
+/* Marca-texto lime: destaca UMA palavra por título. */
+@utility mark {
+  background: linear-gradient(transparent 58%, var(--color-lime) 58% 92%, transparent 0);
+  padding: 0 0.08em;
+}
+
+/* Etiqueta mono em caixa alta (eyebrows, chips, labels). */
+@utility label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+/* Fita: faixa em movimento. O conteúdo vem duplicado para o loop não ter emenda. */
+@keyframes fita {
+  to {
+    transform: translateX(-50%);
+  }
+}
+@utility animate-fita {
+  animation: fita 40s linear infinite;
+}
+
+/* Cards sobem 4px e o salto "pula" no hover (curvas Salto/Pulo do brandbook §13). */
+@utility lift {
+  transition:
+    transform 240ms var(--ease-salto),
+    box-shadow 240ms var(--ease-salto);
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-soft);
+  }
+  &:hover .spark {
+    transform: translate(3px, -3px);
+  }
+}
+
 @layer base {
   html {
     -webkit-font-smoothing: antialiased;
